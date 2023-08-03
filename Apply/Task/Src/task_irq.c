@@ -1,5 +1,5 @@
 #include "task_conf.h"
-
+#include "usercode.h"		/* usercode头文件 */
 #include "config.h"
 
 
@@ -26,9 +26,11 @@ void EXTI15_10_IRQHandler(void)
  * @retval Null
 */
 void USART1_IRQHandler(void)
-{
-	/* 示例 */
-    //Drv_Uart_IRQHandler(&tPCUart);		/* 必需部分 */
+{   
+    rt_interrupt_enter();
+    Drv_Uart_DMA_RxHandler(&Uart1);
+    rt_sem_release(DataFromIPC_Sem);	//释放信号量,接收上位机数据线程开始工作
+    rt_interrupt_leave();
 }
 
 /**
@@ -37,8 +39,10 @@ void USART1_IRQHandler(void)
 */
 void USART2_IRQHandler(void)
 {
-	/* 示例 */
-    //	Drv_Uart_IRQHandler(&tJY901B.tUART);		/* 必需部分 */
+    rt_interrupt_enter();    //进入临界区
+    Drv_Uart_DMA_RxHandler(&JY901S.tUART);
+    rt_sem_release(JY901S_Sem);	//释放信号量,线程获取信号量开始工作
+	rt_interrupt_leave();    //退出临界区
 }
 
 /**
@@ -47,7 +51,9 @@ void USART2_IRQHandler(void)
 */
 void USART3_IRQHandler(void)
 {
-
+    rt_interrupt_enter();
+    Drv_Uart_DMA_RxHandler(&Uart3);
+    rt_interrupt_leave();
 }
 
 /**

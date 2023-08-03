@@ -35,10 +35,16 @@
             "name": "Task",
             "files": [
               {
+                "path": "../Apply/Task/Src/task_analysisdata.c"
+              },
+              {
                 "path": "../Apply/Task/Src/task_irq.c"
               },
               {
                 "path": "../Apply/Task/Src/task_sysinit.c"
+              },
+              {
+                "path": "../Apply/Task/Src/task_thruster.c"
               },
               {
                 "path": "../Apply/Task/Src/task_userinit.c"
@@ -52,6 +58,39 @@
         "name": "Bsp",
         "files": [],
         "folders": [
+          {
+            "name": "Algo",
+            "files": [
+              {
+                "path": "../Bsp/Algo/Src/algo_func.c"
+              },
+              {
+                "path": "../Bsp/Algo/Src/algo_pid.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "Dev",
+            "files": [
+              {
+                "path": "../Bsp/Dev/Src/dev_ps2.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "FatFs",
+            "files": [
+              {
+                "path": "../Bsp/FatFs/Src/ff.c"
+              },
+              {
+                "path": "../Bsp/FatFs/Src/diskio.c"
+              }
+            ],
+            "folders": []
+          },
           {
             "name": "OCD",
             "files": [
@@ -84,39 +123,6 @@
               }
             ],
             "folders": []
-          },
-          {
-            "name": "Dev",
-            "files": [
-              {
-                "path": "../Bsp/Dev/Src/dev_ps2.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "Algo",
-            "files": [
-              {
-                "path": "../Bsp/Algo/Src/algo_func.c"
-              },
-              {
-                "path": "../Bsp/Algo/Src/algo_pid.c"
-              }
-            ],
-            "folders": []
-          },
-          {
-            "name": "FatFs",
-            "files": [
-              {
-                "path": "../Bsp/FatFs/Src/ff.c"
-              },
-              {
-                "path": "../Bsp/FatFs/Src/diskio.c"
-              }
-            ],
-            "folders": []
           }
         ]
       },
@@ -128,9 +134,6 @@
       {
         "name": "Driver",
         "files": [
-          {
-            "path": "../Driver/Src/drv_hal.c"
-          },
           {
             "path": "../Driver/Src/drv_hal_adc.c"
           },
@@ -153,10 +156,10 @@
             "path": "../Driver/Src/drv_hal_pwr.c"
           },
           {
-            "path": "../Driver/Src/drv_hal_spi.c"
+            "path": "../Driver/Src/drv_hal_spi_soft.c"
           },
           {
-            "path": "../Driver/Src/drv_hal_spi_soft.c"
+            "path": "../Driver/Src/drv_hal_spi.c"
           },
           {
             "path": "../Driver/Src/drv_hal_timer.c"
@@ -166,6 +169,9 @@
           },
           {
             "path": "../Driver/Src/drv_hal_wdg.c"
+          },
+          {
+            "path": "../Driver/Src/drv_hal.c"
           }
         ],
         "folders": []
@@ -309,12 +315,6 @@
         "name": "RT-Thread",
         "files": [
           {
-            "path": "../Bsp/RTOS/RT-Thread/libcpu/arm/cortex-m3/context_rvds.S"
-          },
-          {
-            "path": "../Bsp/RTOS/RT-Thread/libcpu/arm/cortex-m3/cpuport.c"
-          },
-          {
             "path": "../Bsp/RTOS/RT-Thread/Src/board.c"
           },
           {
@@ -361,6 +361,12 @@
           },
           {
             "path": "../Bsp/RTOS/RT-Thread/Src/timer.c"
+          },
+          {
+            "path": "../Bsp/RTOS/RT-Thread/libcpu/arm/cortex-m3/cpuport.c"
+          },
+          {
+            "path": "../Bsp/RTOS/RT-Thread/libcpu/arm/cortex-m3/context_rvds.S"
           }
         ],
         "folders": []
@@ -521,9 +527,7 @@
           "../Hardware/STM32F1XX/CMSIS/Device/ST/STM32F1xx/Include",
           "../Hardware/STM32F1XX/STM32F1xx_HAL_Driver/Inc",
           "../Hardware/STM32F1XX/STM32F1xx_HAL_Driver/Inc/Legacy",
-          ".cmsis/include",
-          "RTE/_Demo",
-          ".eide/deps"
+          "RTE/_Demo"
         ],
         "libList": [],
         "sourceDirList": [],

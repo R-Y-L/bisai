@@ -4,8 +4,20 @@
 
 /* 外设初始化函数 */
 void Task_UserInit(void)
-{
-	Drv_GPIO_Init(demoGPIO, 3);
-    
-    Drv_Uart_ITInit(&demoUart);
+{   
+    //初始化串口1和串口3
+    Drv_Uart_DMAInit(&Uart1);
+    Drv_Uart_DMAInit(&Uart3);
+
+    //初始化JY901S
+    OCD_JY901_DMAInit(&JY901S);
+    printf("JY901S INIT!\r\n");
+
+    //初始化MS5837
+    if(!OCD_MS5837_Init(&MS5837))
+        printf("MS5837 ERROR\r\n");
+
+    //初始化PWM
+    Drv_PWM_Init(PWM,8);
+    printf("PWM INIT!\r\n");
 }

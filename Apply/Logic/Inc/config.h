@@ -7,9 +7,14 @@
 #include "dev_conf.h"
 
 /* 用户句柄声明包含区 */
+extern tagUART_T Uart1;
 
-extern tagGPIO_T demoGPIO[];
+extern tagUART_T Uart3;
 
-extern tagUART_T demoUart;
+extern tagJY901_T JY901S;
+
+extern tagPWM_T PWM[];
+
+extern tagMS5837_T MS5837;
 
 #endif

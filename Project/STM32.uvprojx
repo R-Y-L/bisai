@@ -422,6 +422,16 @@
               <FileType>1</FileType>
               <FilePath>..\Apply\Task\Src\task_userinit.c</FilePath>
             </File>
+            <File>
+              <FileName>task_analysisdata.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Apply\Task\Src\task_analysisdata.c</FilePath>
+            </File>
+            <File>
+              <FileName>task_thruster.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Apply\Task\Src\task_thruster.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -1,3 +1,4 @@
+#include "usercode.h"		/* usercode头文件 */
 #include "threadpool.h"		/* threadpool头文件 */
 #include "drv_hal_conf.h"   /* SGA库头文件配置 */
 #include "task_conf.h"      /* task层头文件配置 */
@@ -8,7 +9,145 @@
 
 
 /* 线程入口函数（使用裸机忽略此文件） */
+/* 读取上位机数据线程 */
+void DataFromIPC(void* paramenter)
+{
+    uint8_t ReceBuf[100];
+    uint8_t ReceNum = 0;
 
+    while(1)
+    {
+        if(rt_sem_take(DataFromIPC_Sem,RT_WAITING_FOREVER) == RT_EOK)
+        {
+            //平时调试使用串口1，正式使用采用串口3
+            ReceNum = Drv_Uart_Receive_DMA(&Uart1,ReceBuf);
+            if(ReceNum != 0)
+            {
+                //printf("%s\r\n",ReceBuf);
+                //分析数据
+                Task_AnalysisData(ReceBuf);
+
+                //将临时变量清0
+                memset(ReceBuf,0,ReceNum);
+                ReceNum = 0;
+            }
+        }
+        rt_thread_yield();
+    }
+}
+
+/* 读取JY901S数据线程 */
+void JY901SReadThread(void* paramenter)
+{
+    while(1)
+    {
+        //如果获取到信号量，说明接收到数据
+		if(rt_sem_take(JY901S_Sem,RT_WAITING_FOREVER) == RT_EOK)
+		{
+            //如果成功处理完成数据
+			if(OCD_JY901_DataProcess(&JY901S))
+            {
+                //数据转换
+                OCD_JY901_DataConversion(&JY901S);
+                //打印欧拉角
+                if(JY901S.tConfig.usType & JY901_OUTPUT_ANGLE)	    
+                    printf("J Angle %.3f %.3f %.3f\r\n",
+                            JY901S.stcAngle.ConRoll,
+                            JY901S.stcAngle.ConPitch,
+                            JY901S.stcAngle.ConYaw);
+            }
+		}
+		rt_thread_yield();
+    }
+}
+
+/* 读取MS5837数据线程 */
+void MS5837ReadThread(void* paramenter)
+{
+    while(1)
+    {
+        OCD_MS5837_GetData(&MS5837);
+        printf("M %f\r\n",MS5837.fDepth);
+        Drv_Delay_Ms(1000);
+        rt_thread_yield();
+    }
+}
+
+/* 手柄控制线程 */
+void MODE_HANDLE(void* paramenter)
+{
+    uint8_t buf[15];
+    float DataBuf[4];
+
+    while(1)
+    {
+        //手柄控制消息队列接收到数据，将切换到自动模式
+        if(rt_mq_recv(HandleModemq,buf,sizeof(buf),RT_WAITING_NO) == RT_EOK)
+        {
+            if(!strcmp((char *)buf,"AUTO START"))
+            {
+                printf("Switch to AUTO Mode\r\n");
+                rt_enter_critical();                    //调度器上锁
+                rt_thread_suspend(rt_thread_self());    //挂起本线程
+                rt_thread_resume(thread5);              //恢复自动控制线程
+                rt_exit_critical();                     //调度器解锁
+                rt_schedule();                          //立即执行一次调度
+            }
+        }
+
+        //尝试获取信号量，若获取到，说明有手柄数据
+        if(rt_sem_trytake(JSData_Sem) == RT_EOK)
+        {
+            memset(DataBuf,0,4);
+            DataBuf[0] = fNum[0];
+            DataBuf[1] = fNum[1];
+            printf("%f %f\r\n",DataBuf[0],DataBuf[1]);
+        }
+        // printf("HANDLE\r\n");
+        
+        Drv_Delay_Ms(1);    //让出CPU资源给低优先级线程
+        rt_thread_yield();
+    }
+}
+
+/* 巡线模式线程 */
+void MODE_AUTO(void* paramenter)
+{
+    uint8_t buf[15];
+
+    //默认挂起自动模式
+    rt_thread_suspend(rt_thread_self());
+    rt_schedule();
+    while(1)
+    {
+        //自动控制消息队列接收到数据，将切换到手柄模式
+        if(rt_mq_recv(AutoModemq,buf,sizeof(buf),RT_WAITING_NO) == RT_EOK)
+        {
+            if(!strcmp((char *)buf,"HANDLE START"))
+            {
+                printf("Switch to HANDLE Mode\r\n");
+                rt_enter_critical();                    //调度器上锁
+                rt_thread_suspend(rt_thread_self());    //挂起本线程
+                rt_thread_resume(thread4);              //恢复手动控制线程
+                rt_exit_critical();                     //调度器解锁
+                rt_schedule();                          //立即执行一次调度
+            }
+        }
+        printf("AUTO\r\n");
+        Drv_Delay_Ms(1000);
+        rt_thread_yield();
+    }
+}
+
+/* 测试线程 */
+void TestThread(void* paramenter)
+{
+    while(1)
+    {
+        Drv_Delay_Ms(1000);
+        rt_thread_yield();
+    }
+}
 
 
 

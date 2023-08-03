@@ -6,5 +6,7 @@
 #include "task_irq.h"
 #include "task_sysinit.h"
 #include "task_userinit.h"
+#include "task_analysisdata.h"
+#include "task_thruster.h"
 
 #endif

@@ -1,102 +1,155 @@
 #include "config.h"
 
+/* 工程中所用到所有IO
+	Thruster
+		  PWM1	PE9
+		  PWM2	PE11
+		  PWM3	PE13
+		  PWM4	PE14
+		  PWM5	PB6
+		  PWM6	PB7
+		  PWM7	PB
+		  PWM8	PB9
+	JY901S
+		PA2	PA3 Uart2
 
-/* GPIO句柄示例 */
-tagGPIO_T demoGPIO[] =
-{
-	
-	[0]=
-	{ 
-		.tGPIOInit.Pin 		= GPIO_PIN_13,				/* GPIO引脚 */
-		.tGPIOInit.Mode 	= GPIO_MODE_OUTPUT_PP,		/* GPIO模式 */
-		.tGPIOInit.Pull 	= GPIO_NOPULL,				/* GPIO上下拉设置，是否需要上下拉看硬件 */
-		.tGPIOInit.Speed 	= GPIO_SPEED_FREQ_HIGH,		/* GPIO速度 */	
-		.tGPIOPort 			= GPIOD,					/* GPIO分组 */
-	},
-    [1]=
-	{ 
-		.tGPIOInit.Pin 		= GPIO_PIN_14,				/* GPIO引脚 */
-		.tGPIOInit.Mode 	= GPIO_MODE_OUTPUT_PP,		/* GPIO模式 */
-		.tGPIOInit.Pull 	= GPIO_NOPULL,				/* GPIO上下拉设置，是否需要上下拉看硬件 */
-		.tGPIOInit.Speed 	= GPIO_SPEED_FREQ_HIGH,		/* GPIO速度 */	
-		.tGPIOPort 			= GPIOD,					/* GPIO分组 */
-	},
-    [2]=
-	{ 
-		.tGPIOInit.Pin 		= GPIO_PIN_15,				/* GPIO引脚 */
-		.tGPIOInit.Mode 	= GPIO_MODE_OUTPUT_PP,		/* GPIO模式 */
-		.tGPIOInit.Pull 	= GPIO_NOPULL,				/* GPIO上下拉设置，是否需要上下拉看硬件 */
-		.tGPIOInit.Speed 	= GPIO_SPEED_FREQ_HIGH,		/* GPIO速度 */	
-		.tGPIOPort 			= GPIOD,					/* GPIO分组 */
-	},
-    
-};
-
-/* 串口句柄示例 */
-tagUART_T demoUart = 
-{
-	//串口工作模式配置
-	.tUARTHandle.Instance 				= USART1,					/* STM32 串口设备 */
-	.tUARTHandle.Init.BaudRate   		= 115200,					/* 串口波特率 */
-	.tUARTHandle.Init.WordLength 		= UART_WORDLENGTH_8B,
-	.tUARTHandle.Init.StopBits   		= UART_STOPBITS_1,
-	.tUARTHandle.Init.Parity     		= UART_PARITY_NONE,
-	.tUARTHandle.Init.HwFlowCtl  		= UART_HWCONTROL_NONE,
-	.tUARTHandle.Init.Mode       		= UART_MODE_TX_RX,
-	.tUARTHandle.Init.OverSampling 		= UART_OVERSAMPLING_16,
-
-#if defined (STM32L4_SGA_ENABLE)
-	.tUARTHandle.Init.OneBitSampling 	= UART_ONE_BIT_SAMPLE_DISABLE,
-	.tUARTHandle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT,
-#endif
-	
-	.ucPriority							= 1,						/* 中断优先级 */
-	.ucSubPriority						= 3,						/* 中断子优先级 */
-	
+	Uart1			Uart2			Uart3			Uart4			Uart5
+		TX PA9 			TX PA2			TX PB10			TX PC10			TX PC12
+		RX PA10			RX PA3			RX PB11			RX PC11			RX PD2
+*/
+/* 串口1初始化句柄 */
+tagUART_T Uart1 = 
+{	
 	//串口DMA接收参数配置
 	.tUartDMA.bRxEnable					= true,						/* DMA接收使能 */
-	.tUartDMA.tDMARx.Instance			= DMA1_Channel5,
-	.tUartDMA.tDMARx.Init.Direction		= DMA_PERIPH_TO_MEMORY,
-	.tUartDMA.tDMARx.Init.PeriphInc		= DMA_PINC_DISABLE,
-	.tUartDMA.tDMARx.Init.MemInc		= DMA_MINC_ENABLE,
-	.tUartDMA.tDMARx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE,
-	.tUartDMA.tDMARx.Init.MemDataAlignment	  = DMA_MDATAALIGN_BYTE,
-	.tUartDMA.tDMARx.Init.Mode			= DMA_CIRCULAR,
-	.tUartDMA.tDMARx.Init.Priority		= DMA_PRIORITY_LOW,
+	.tRxInfo.usDMARxMAXSize             = 100,              		/* 接收数据长度 长度保持在协议最长字节*2以上，确保缓存池一定能够稳定接收一个完整的数据帧*/
+};
 
-	.tRxInfo.usDMARxMAXSize             	= 100,              	/* 接收数据长度 长度保持在协议最长字节*2以上，确保缓存池一定能够稳定接收一个完整的数据帧*/
+/* 串口3初始化句柄 */
+tagUART_T Uart3 = 
+{
+	.tUARTHandle.Instance				= USART3,
+	//串口DMA接收参数配置
+	.tUartDMA.bRxEnable					= true,						/* DMA接收使能 */
+	.tRxInfo.usDMARxMAXSize             = 100,              		/* 接收数据长度 长度保持在协议最长字节*2以上，确保缓存池一定能够稳定接收一个完整的数据帧*/
+};
 
-	.tUartDMA.ucDMARxPriority				= 1,					/* DMA接收中断优先级 */
-	.tUartDMA.ucDMARxSubPriority			= 1,					/* DMA接收中断子优先级 */
-	
-	//串口DMA发送参数配置
-	.tUartDMA.bTxEnable					= true,						/* DMA发送使能 */
-	.tUartDMA.tDMATx.Instance			= DMA1_Channel4,
-	.tUartDMA.tDMATx.Init.Direction		= DMA_MEMORY_TO_PERIPH,
-	.tUartDMA.tDMATx.Init.PeriphInc		= DMA_PINC_DISABLE,
-	.tUartDMA.tDMATx.Init.MemInc		= DMA_MINC_ENABLE,
-	.tUartDMA.tDMATx.Init.PeriphDataAlignment	= DMA_PDATAALIGN_BYTE,
-	.tUartDMA.tDMATx.Init.MemDataAlignment		= DMA_MDATAALIGN_BYTE,
-	.tUartDMA.tDMATx.Init.Mode			= DMA_NORMAL,
-	.tUartDMA.tDMATx.Init.Priority		= DMA_PRIORITY_LOW,
+/* JY901S参数设置 */
+tagJY901_T JY901S = 
+{
+	.tConfig.ucBaud 	= JY901_RXBAUD_9600,
+	.tConfig.ucRate		= JY901_RX_1HZ,
+	.tConfig.usType		= JY901_OUTPUT_ANGLE,
 
-	.tTxInfo.usDMATxMAXSize				= 50,						/* 最大发送数据长度 */
-	
-	.tUartDMA.ucDMATxPriority				= 1,					/* DMA发送中断优先级 */
-	.tUartDMA.ucDMATxSubPriority			= 1,					/* DMA发送中断子优先级 */
+	.tUART.tRxInfo.usDMARxMAXSize             	= 100,                 /* 接收数据长度 长度保持在协议最长字节*2以上，确保缓存池一定能够稳定接收一个完整的数据帧*/
 
-	//串口GPIO配置
-	.tGPIO[0].tGPIOInit.Pin 			= GPIO_PIN_9,				/* GPIO引脚 */
-	.tGPIO[0].tGPIOInit.Mode 			= GPIO_MODE_AF_PP,			/* GPIO模式 */
-	.tGPIO[0].tGPIOInit.Pull 			= GPIO_NOPULL,				/* GPIO上下拉设置，是否需要上下拉看硬件 */
-	.tGPIO[0].tGPIOInit.Speed 			= GPIO_SPEED_FREQ_HIGH,		/* GPIO速度 */	
-	.tGPIO[0].tGPIOPort 				= GPIOA,					/* GPIO分组 */
-	.tGPIO[0].ucAFMode					= NO_REMAP,					/* GPIO重映射 */
-	
-	.tGPIO[1].tGPIOInit.Pin 			= GPIO_PIN_10,				/* GPIO引脚 */
-	.tGPIO[1].tGPIOInit.Mode 			= GPIO_MODE_INPUT,			/* GPIO模式 */
-	.tGPIO[1].tGPIOInit.Pull 			= GPIO_NOPULL,				/* GPIO上下拉设置，是否需要上下拉看硬件 */
-	.tGPIO[1].tGPIOInit.Speed 			= GPIO_SPEED_FREQ_HIGH,		/* GPIO速度 */	
-	.tGPIO[1].tGPIOPort 				= GPIOA,					/* GPIO分组 */
-	.tGPIO[1].ucAFMode					= NO_REMAP,					/* GPIO重映射 */
+    .tUART.tUartDMA.bRxEnable					= true,						/* DMA接收使能 */
+};
+
+/* MS5837示例 */
+tagMS5837_T MS5837 = 
+{
+    /* 采样分辨率设置 */
+	.setOSR = MS5837_OSR4096,
+
+	/* SCL线 */
+	.tIIC.tIICSoft[0].tGPIOInit.Pin 		= GPIO_PIN_6,				/* GPIO引脚 */
+	.tIIC.tIICSoft[0].tGPIOInit.Mode 		= GPIO_MODE_OUTPUT_PP,		/* GPIO模式 */
+	.tIIC.tIICSoft[0].tGPIOInit.Pull 		= GPIO_NOPULL,				/* GPIO上下拉设置，是否需要上下拉看硬件 */
+	.tIIC.tIICSoft[0].tGPIOInit.Speed 		= GPIO_SPEED_FREQ_HIGH,		/* GPIO速度 */	
+	.tIIC.tIICSoft[0].tGPIOPort 			= GPIOC,					/* GPIO分组 */
+
+	/* SDA线 */
+	.tIIC.tIICSoft[1].tGPIOInit.Pin 		= GPIO_PIN_7,				/* GPIO引脚 */
+	.tIIC.tIICSoft[1].tGPIOInit.Mode		= GPIO_MODE_INPUT,			/* GPIO模式 */
+	.tIIC.tIICSoft[1].tGPIOInit.Pull		= GPIO_NOPULL,				/* GPIO上下拉设置，是否需要上下拉看硬件 */
+	.tIIC.tIICSoft[1].tGPIOInit.Speed		= GPIO_SPEED_FREQ_HIGH,		/* GPIO速度 */	
+	.tIIC.tIICSoft[1].tGPIOPort 			= GPIOC,					/* GPIO分组 */
+};
+
+/* PWM参数设置 */
+tagPWM_T PWM[] =
+{
+	//默认使用前4个IO口输出PWM
+	[0] =
+	{
+		.tPWMHandle.Instance	= TIM1,         	/* 定时器1 */
+		.fDuty					= 7.5,				/* 初始占空比（%） */
+		.ulFreq					= 50,				/* 频率（Hz） */
+		.ucChannel				= TIM_CHANNEL_1,	/* 通道 */
+		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_9,		/* IO映射 */
+		.tGPIO.tGPIOPort		= GPIOE,			/* IO组映射 */
+		.tGPIO.ucAFMode			= FULL_REMAP,		/* IO重映射模式 */
+	},
+	[1] =
+	{
+		.tPWMHandle.Instance	= TIM1,         	/* 定时器1 */
+		.fDuty					= 7.5,				/* 初始占空比（%） */
+		.ulFreq					= 50,				/* 频率（Hz） */
+		.ucChannel				= TIM_CHANNEL_2,	/* 通道 */
+		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_11,		/* IO映射 */
+		.tGPIO.tGPIOPort		= GPIOE,			/* IO组映射 */
+		.tGPIO.ucAFMode			= FULL_REMAP,		/* IO重映射模式 */
+	},
+	[2] =
+	{
+		.tPWMHandle.Instance	= TIM1,         	/* 定时器1 */
+		.fDuty					= 7.5,				/* 初始占空比（%） */
+		.ulFreq					= 50,				/* 频率（Hz） */
+		.ucChannel				= TIM_CHANNEL_3,	/* 通道 */
+		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_13,		/* IO映射 */
+		.tGPIO.tGPIOPort		= GPIOE,			/* IO组映射 */
+		.tGPIO.ucAFMode			= FULL_REMAP,		/* IO重映射模式 */
+	},
+	[3] =
+	{
+		.tPWMHandle.Instance	= TIM1,         	/* 定时器1 */
+		.fDuty					= 7.5,				/* 初始占空比（%） */
+		.ulFreq					= 50,				/* 频率（Hz） */
+		.ucChannel				= TIM_CHANNEL_4,	/* 通道 */
+		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_14,		/* IO映射 */
+		.tGPIO.tGPIOPort		= GPIOE,			/* IO组映射 */
+		.tGPIO.ucAFMode			= FULL_REMAP,		/* IO重映射模式 */
+	},
+	//下面4个IO口为备用口
+	[4] =
+	{
+		.tPWMHandle.Instance	= TIM4,         	/* 定时器4 */
+		.fDuty					= 7.5,				/* 初始占空比（%） */
+		.ulFreq					= 50,				/* 频率（Hz） */
+		.ucChannel				= TIM_CHANNEL_1,	/* 通道 */
+		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_6,		/* IO映射 */
+		.tGPIO.tGPIOPort		= GPIOB,			/* IO组映射 */
+		.tGPIO.ucAFMode			= NO_REMAP,			/* IO重映射模式 */
+	},
+	[5] =
+	{
+		.tPWMHandle.Instance	= TIM4,         	/* 定时器4 */
+		.fDuty					= 7.5,				/* 初始占空比（%） */
+		.ulFreq					= 50,				/* 频率（Hz） */
+		.ucChannel				= TIM_CHANNEL_2,	/* 通道 */
+		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_7,		/* IO映射 */
+		.tGPIO.tGPIOPort		= GPIOB,			/* IO组映射 */
+		.tGPIO.ucAFMode			= NO_REMAP,			/* IO重映射模式 */
+	},	
+	[6] =
+	{
+		.tPWMHandle.Instance	= TIM4,         	/* 定时器4 */
+		.fDuty					= 7.5,				/* 初始占空比（%） */
+		.ulFreq					= 50,				/* 频率（Hz） */
+		.ucChannel				= TIM_CHANNEL_3,	/* 通道 */
+		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_8,		/* IO映射 */
+		.tGPIO.tGPIOPort		= GPIOB,			/* IO组映射 */
+		.tGPIO.ucAFMode			= NO_REMAP,			/* IO重映射模式 */
+	},	
+	[7] =
+	{
+		.tPWMHandle.Instance	= TIM4,         	/* 定时器4 */
+		.fDuty					= 7.5,				/* 初始占空比（%） */
+		.ulFreq					= 50,				/* 频率（Hz） */
+		.ucChannel				= TIM_CHANNEL_4,	/* 通道 */
+		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_9,		/* IO映射 */
+		.tGPIO.tGPIOPort		= GPIOB,			/* IO组映射 */
+		.tGPIO.ucAFMode			= NO_REMAP,			/* IO重映射模式 */
+	},
 };
