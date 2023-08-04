@@ -17,6 +17,30 @@
 		TX PA9 			TX PA2			TX PB10			TX PC10			TX PC12
 		RX PA10			RX PA3			RX PB11			RX PC11			RX PD2
 */
+/* 深度环PID */
+tagPID_T DepthPID = 
+{
+	.fKp = 0,
+	.fKi = 0,
+	.fKd = 0,
+};
+
+/* 艏向PID */
+tagPID_T YawPID = 
+{
+	.fKp = 1,
+	.fKi = 0.1,
+	.fKd = 0,
+};
+
+/* 巡线PID */
+tagPID_T LinePatrolPID = 
+{
+	.fKp = 2,
+	.fKi = 0.1,
+	.fKd = 0,
+};
+
 /* 串口1初始化句柄 */
 tagUART_T Uart1 = 
 {	

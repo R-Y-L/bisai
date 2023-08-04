@@ -19,8 +19,12 @@ void DataFromIPC(void* paramenter)
     {
         if(rt_sem_take(DataFromIPC_Sem,RT_WAITING_FOREVER) == RT_EOK)
         {
-            //平时调试使用串口1，正式使用采用串口3
-            ReceNum = Drv_Uart_Receive_DMA(&Uart1,ReceBuf);
+            //平时调试使用串口1，正式使用采用串口3,修改PRINTF_UART宏即可
+            if(PRINTF_UART == USART1)
+                ReceNum = Drv_Uart_Receive_DMA(&Uart1,ReceBuf);
+            else if(PRINTF_UART == USART3)
+                ReceNum = Drv_Uart_Receive_DMA(&Uart3,ReceBuf);
+            
             if(ReceNum != 0)
             {
                 //printf("%s\r\n",ReceBuf);
@@ -32,6 +36,7 @@ void DataFromIPC(void* paramenter)
                 ReceNum = 0;
             }
         }
+        Drv_Delay_Ms(1);    //让出CPU资源给低优先级线程
         rt_thread_yield();
     }
 }
@@ -76,16 +81,22 @@ void MS5837ReadThread(void* paramenter)
 /* 手柄控制线程 */
 void MODE_HANDLE(void* paramenter)
 {
-    uint8_t buf[15];
-    float DataBuf[4];
+    HandleModeInfo HMInfo;
+    AutoModeInfo ClearBuf;
 
     while(1)
     {
         //手柄控制消息队列接收到数据，将切换到自动模式
-        if(rt_mq_recv(HandleModemq,buf,sizeof(buf),RT_WAITING_NO) == RT_EOK)
+        if(rt_mq_recv(HandleModemq,&HMInfo,sizeof(HandleModeInfo),RT_WAITING_NO) == RT_EOK)
         {
-            if(!strcmp((char *)buf,"AUTO START"))
+            if(!strcmp(HMInfo.ModeChange,"AUTO START"))
             {
+                //将AutoModemq消息队列中所有内容清空
+                while(1)
+                {
+                    if(rt_mq_recv(AutoModemq,&ClearBuf,sizeof(AutoModeInfo),RT_WAITING_NO) != RT_EOK)
+                        break;
+                }
                 printf("Switch to AUTO Mode\r\n");
                 rt_enter_critical();                    //调度器上锁
                 rt_thread_suspend(rt_thread_self());    //挂起本线程
@@ -93,15 +104,11 @@ void MODE_HANDLE(void* paramenter)
                 rt_exit_critical();                     //调度器解锁
                 rt_schedule();                          //立即执行一次调度
             }
-        }
-
-        //尝试获取信号量，若获取到，说明有手柄数据
-        if(rt_sem_trytake(JSData_Sem) == RT_EOK)
-        {
-            memset(DataBuf,0,4);
-            DataBuf[0] = fNum[0];
-            DataBuf[1] = fNum[1];
-            printf("%f %f\r\n",DataBuf[0],DataBuf[1]);
+            else
+            {
+                Task_HandleMode_Process(HMInfo);    //手柄控制模式处理函数
+                Drv_Delay_Ms(500);  //执行时间与上位机手柄发送一帧数据时间相同
+            }    
         }
         // printf("HANDLE\r\n");
         
@@ -113,7 +120,8 @@ void MODE_HANDLE(void* paramenter)
 /* 巡线模式线程 */
 void MODE_AUTO(void* paramenter)
 {
-    uint8_t buf[15];
+    AutoModeInfo AMInfo;
+    HandleModeInfo ClearBuf;
 
     //默认挂起自动模式
     rt_thread_suspend(rt_thread_self());
@@ -121,10 +129,16 @@ void MODE_AUTO(void* paramenter)
     while(1)
     {
         //自动控制消息队列接收到数据，将切换到手柄模式
-        if(rt_mq_recv(AutoModemq,buf,sizeof(buf),RT_WAITING_NO) == RT_EOK)
+        if(rt_mq_recv(AutoModemq,&AMInfo,sizeof(AutoModeInfo),RT_WAITING_NO) == RT_EOK)
         {
-            if(!strcmp((char *)buf,"HANDLE START"))
+            if(!strcmp(AMInfo.ModeChange,"HANDLE START"))
             {
+                //将HandleModemq队列中所有内容清空
+                while(1)
+                {
+                    if(rt_mq_recv(HandleModemq,&ClearBuf,sizeof(HandleModeInfo),RT_WAITING_NO) != RT_EOK)
+                        break;
+                }
                 printf("Switch to HANDLE Mode\r\n");
                 rt_enter_critical();                    //调度器上锁
                 rt_thread_suspend(rt_thread_self());    //挂起本线程
@@ -132,9 +146,18 @@ void MODE_AUTO(void* paramenter)
                 rt_exit_critical();                     //调度器解锁
                 rt_schedule();                          //立即执行一次调度
             }
+            else
+            {
+                //自动模式处理函数，根据消息队列中传来的黑线角度改变推进器PWM
+                Task_AutoMode_Process(AMInfo);
+                //printf("%f\r\n",AMInfo.BlackAngle);
+                Drv_Delay_Ms(300);
+            }
         }
-        printf("AUTO\r\n");
-        Drv_Delay_Ms(1000);
+
+        // printf("AUTO\r\n");
+        // Drv_Delay_Ms(1000);
+        Drv_Delay_Ms(1);    //让出CPU资源给低优先级线程
         rt_thread_yield();
     }
 }

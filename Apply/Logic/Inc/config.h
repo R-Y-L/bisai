@@ -17,4 +17,10 @@ extern tagPWM_T PWM[];
 
 extern tagMS5837_T MS5837;
 
+extern tagPID_T DepthPID;
+
+extern tagPID_T YawPID;
+
+extern tagPID_T LinePatrolPID;
+
 #endif

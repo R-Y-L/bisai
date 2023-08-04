@@ -53,6 +53,7 @@ void USART3_IRQHandler(void)
 {
     rt_interrupt_enter();
     Drv_Uart_DMA_RxHandler(&Uart3);
+    rt_sem_release(DataFromIPC_Sem);	//释放信号量,接收上位机数据线程开始工作
     rt_interrupt_leave();
 }
 

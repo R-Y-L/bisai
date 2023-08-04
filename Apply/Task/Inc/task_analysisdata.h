@@ -1,7 +1,17 @@
 #ifndef __TASK_ANALYSISDATA_H_
 #define __TASK_ANALYSISDATA_H_
 
-extern float fNum[4];
+typedef struct 
+{
+    char ModeChange[15];    //存放模式切换命令
+    float fNum[3];          //存放浮点数数据
+}HandleModeInfo;
+
+typedef struct 
+{
+    char ModeChange[15];    //存放模式切换命令
+    float BlackAngle;       //黑线角度
+}AutoModeInfo;
 
 void Task_AnalysisData(uint8_t *DataBuf);
 

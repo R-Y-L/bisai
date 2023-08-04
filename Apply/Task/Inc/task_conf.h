@@ -8,5 +8,7 @@
 #include "task_userinit.h"
 #include "task_analysisdata.h"
 #include "task_thruster.h"
+#include "task_handlemode.h"
+#include "task_automode.h"
 
 #endif

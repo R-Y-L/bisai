@@ -9,6 +9,11 @@ void Task_UserInit(void)
     Drv_Uart_DMAInit(&Uart1);
     Drv_Uart_DMAInit(&Uart3);
 
+    //初始化PID
+    Algo_PID_Init(&DepthPID);
+    Algo_PID_Init(&YawPID);
+    Algo_PID_Init(&LinePatrolPID);
+
     //初始化JY901S
     OCD_JY901_DMAInit(&JY901S);
     printf("JY901S INIT!\r\n");
@@ -20,4 +25,7 @@ void Task_UserInit(void)
     //初始化PWM
     Drv_PWM_Init(PWM,8);
     printf("PWM INIT!\r\n");
+
+    //推进器上电初始化
+    //Task_Thruster_Init();
 }

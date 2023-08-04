@@ -14,7 +14,6 @@ extern rt_thread_t thread6;
 
 extern rt_sem_t JY901S_Sem;
 extern rt_sem_t DataFromIPC_Sem;
-extern rt_sem_t JSData_Sem;
 
 extern rt_mq_t AutoModemq;
 extern rt_mq_t HandleModemq;

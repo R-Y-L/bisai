@@ -11,7 +11,9 @@
             "config.h": "c",
             "task_analysisdata.h": "c",
             "usercode.h": "c",
-            "sstream": "c"
+            "sstream": "c",
+            "task_handlemode.h": "c",
+            "task_automode.h": "c"
         }
     },
     "extensions": {}
