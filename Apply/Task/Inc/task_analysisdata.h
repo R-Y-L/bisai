@@ -5,6 +5,7 @@ typedef struct
 {
     char ModeChange[15];    //存放模式切换命令
     float fNum[3];          //存放浮点数数据
+    bool keyPressed;
 }HandleModeInfo;
 
 typedef struct 

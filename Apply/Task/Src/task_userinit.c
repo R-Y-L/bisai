@@ -16,15 +16,17 @@ void Task_UserInit(void)
 
     //初始化JY901S
     OCD_JY901_DMAInit(&JY901S);
-    printf("JY901S INIT!\r\n");
+    //printf("JY901S INIT!\r\n");
 
     //初始化MS5837
-    if(!OCD_MS5837_Init(&MS5837))
-        printf("MS5837 ERROR\r\n");
+    // if(!OCD_MS5837_Init(&MS5837))
+    //     printf("MS5837 ERROR\r\n");
+
+    OCD_MS5837_Init(&MS5837);
 
     //初始化PWM
     Drv_PWM_Init(PWM,8);
-    printf("PWM INIT!\r\n");
+    //printf("PWM INIT!\r\n");
 
     //推进器上电初始化
     //Task_Thruster_Init();

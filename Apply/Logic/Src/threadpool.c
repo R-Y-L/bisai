@@ -32,7 +32,7 @@ void DataFromIPC(void* paramenter)
                 Task_AnalysisData(ReceBuf);
 
                 //将临时变量清0
-                memset(ReceBuf,0,ReceNum);
+                rt_memset(ReceBuf,0,ReceNum);
                 ReceNum = 0;
             }
         }
@@ -72,7 +72,8 @@ void MS5837ReadThread(void* paramenter)
     while(1)
     {
         OCD_MS5837_GetData(&MS5837);
-        printf("M %f\r\n",MS5837.fDepth);
+        if(MS5837.fDepth != 153150.250000)  //未接MS5837的错误数据
+            printf("M %f\r\n",MS5837.fDepth);
         Drv_Delay_Ms(1000);
         rt_thread_yield();
     }
@@ -89,7 +90,7 @@ void MODE_HANDLE(void* paramenter)
         //手柄控制消息队列接收到数据，将切换到自动模式
         if(rt_mq_recv(HandleModemq,&HMInfo,sizeof(HandleModeInfo),RT_WAITING_NO) == RT_EOK)
         {
-            if(!strcmp(HMInfo.ModeChange,"AUTO START"))
+            if(!rt_strcmp(HMInfo.ModeChange,"AUTO START"))
             {
                 //将AutoModemq消息队列中所有内容清空
                 while(1)
@@ -108,10 +109,12 @@ void MODE_HANDLE(void* paramenter)
             {
                 Task_HandleMode_Process(HMInfo);    //手柄控制模式处理函数
                 Drv_Delay_Ms(500);  //执行时间与上位机手柄发送一帧数据时间相同
-            }    
+                Task_Thruster_SpeedSet(1,STOP_PWM_VALUE);
+                Task_Thruster_SpeedSet(2,STOP_PWM_VALUE);
+            }
         }
         // printf("HANDLE\r\n");
-        
+
         Drv_Delay_Ms(1);    //让出CPU资源给低优先级线程
         rt_thread_yield();
     }
@@ -131,7 +134,7 @@ void MODE_AUTO(void* paramenter)
         //自动控制消息队列接收到数据，将切换到手柄模式
         if(rt_mq_recv(AutoModemq,&AMInfo,sizeof(AutoModeInfo),RT_WAITING_NO) == RT_EOK)
         {
-            if(!strcmp(AMInfo.ModeChange,"HANDLE START"))
+            if(!rt_strcmp(AMInfo.ModeChange,"HANDLE START"))
             {
                 //将HandleModemq队列中所有内容清空
                 while(1)
@@ -152,6 +155,8 @@ void MODE_AUTO(void* paramenter)
                 Task_AutoMode_Process(AMInfo);
                 //printf("%f\r\n",AMInfo.BlackAngle);
                 Drv_Delay_Ms(300);
+                Task_Thruster_SpeedSet(1,STOP_PWM_VALUE);
+                Task_Thruster_SpeedSet(2,STOP_PWM_VALUE);
             }
         }
 

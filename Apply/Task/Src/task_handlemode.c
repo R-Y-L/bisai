@@ -47,9 +47,17 @@ void Task_HandleMode_Process(HandleModeInfo HMInfo)
         }
     }
 
+    //PWM限幅
+    if(leftPWM < 1350)  leftPWM = 1350;
+    if(leftPWM > 1650)  leftPWM = 1650;
+
+    if(rightPWM < 1350)  rightPWM = 1350;
+    if(rightPWM > 1650)  rightPWM = 1650;
+
     //根据PID结果改变左右翼水平推进器PWM，假设1为左水平推，2为右水平推，超过1500为前进方向
     Task_Thruster_SpeedSet(1,leftPWM);
     Task_Thruster_SpeedSet(2,rightPWM);
 
-    printf("Handle left%d right%d\r\n",leftPWM,rightPWM);
+    //printf("Handle left%d right%d\r\n",leftPWM,rightPWM);
+    printf("T %d %d %d %d\r\n",leftPWM,rightPWM,1500,1500);
 }
