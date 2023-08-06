@@ -25,43 +25,7 @@ void Task_AnalysisData(uint8_t *DataBuf)
 
     if(!AnalysisNum) return;
     /* 根据帧头选择任务 */
-    //PID值
-    if(!rt_strcmp(AnalysisData[0],"PID"))
-    {
-        //深度环PID
-        if(!rt_strcmp(AnalysisData[1],"DepthPID"))
-        {
-            HMInfo.fNum[0] = strtof(AnalysisData[2],NULL);
-            HMInfo.fNum[1] = strtof(AnalysisData[3],NULL);
-            HMInfo.fNum[2] = strtof(AnalysisData[4],NULL);
 
-            //更新深度环PID
-            Algo_PID_Update(&DepthPID,HMInfo.fNum);
-            printf("DepthPID %f %f %f\r\n",DepthPID.fKp,DepthPID.fKi,DepthPID.fKd);
-        }
-        //艏向环PID
-        else if(!rt_strcmp(AnalysisData[1],"YawPID"))
-        {
-            HMInfo.fNum[0] = strtof(AnalysisData[2],NULL);
-            HMInfo.fNum[1] = strtof(AnalysisData[3],NULL);
-            HMInfo.fNum[2] = strtof(AnalysisData[4],NULL);
-
-            //更新艏向环PID
-            Algo_PID_Update(&YawPID,HMInfo.fNum);
-            printf("YawPID %f %f %f\r\n",YawPID.fKp,YawPID.fKi,YawPID.fKd);
-        }
-        //巡线环PID
-        else if(!rt_strcmp(AnalysisData[1],"LinePatrolPID"))
-        {
-            HMInfo.fNum[0] = strtof(AnalysisData[2],NULL);
-            HMInfo.fNum[1] = strtof(AnalysisData[3],NULL);
-            HMInfo.fNum[2] = strtof(AnalysisData[4],NULL);
-            
-            //更新巡线环PID
-            Algo_PID_Update(&LinePatrolPID,HMInfo.fNum);
-            printf("LinePatrolPID %f %f %f\r\n",LinePatrolPID.fKp,LinePatrolPID.fKi,LinePatrolPID.fKd);
-        }
-    }
     //手柄摇杆值
     else if(!rt_strcmp(AnalysisData[0],"JSV"))
     {
@@ -73,6 +37,7 @@ void Task_AnalysisData(uint8_t *DataBuf)
         //将数据发送给手柄控制线程
         rt_mq_send(HandleModemq,&HMInfo,sizeof(HandleModeInfo));
     }
+
     //手柄按键状态
     else if(!rt_strcmp(AnalysisData[0],"JSB"))
     {
@@ -115,6 +80,13 @@ void Task_AnalysisData(uint8_t *DataBuf)
         rt_mq_send(HandleModemq,&HMInfo,sizeof(HandleModeInfo));
     }
 
+    //自动巡线模式角度值
+    else if(!rt_strcmp(AnalysisData[0],"LP"))
+    {
+        AMInfo.BlackAngle = strtof(AnalysisData[1],NULL);
+        rt_mq_send(AutoModemq,&AMInfo,sizeof(AutoModeInfo));
+    }
+
     //模式切换命令
     else if(!rt_strcmp(AnalysisData[0],"MODE"))
     {
@@ -133,11 +105,42 @@ void Task_AnalysisData(uint8_t *DataBuf)
         }
     }
 
-    //自动巡线模式角度值
-    else if(!rt_strcmp(AnalysisData[0],"LP"))
+    //PID值
+    else if(!rt_strcmp(AnalysisData[0],"PID"))
     {
-        AMInfo.BlackAngle = strtof(AnalysisData[1],NULL);
-        rt_mq_send(AutoModemq,&AMInfo,sizeof(AutoModeInfo));
+        //深度环PID
+        if(!rt_strcmp(AnalysisData[1],"DepthPID"))
+        {
+            HMInfo.fNum[0] = strtof(AnalysisData[2],NULL);
+            HMInfo.fNum[1] = strtof(AnalysisData[3],NULL);
+            HMInfo.fNum[2] = strtof(AnalysisData[4],NULL);
+
+            //更新深度环PID
+            Algo_PID_Update(&DepthPID,HMInfo.fNum);
+            printf("DepthPID %.2f %.2f %.2f\r\n",DepthPID.fKp,DepthPID.fKi,DepthPID.fKd);
+        }
+        //艏向环PID
+        else if(!rt_strcmp(AnalysisData[1],"YawPID"))
+        {
+            HMInfo.fNum[0] = strtof(AnalysisData[2],NULL);
+            HMInfo.fNum[1] = strtof(AnalysisData[3],NULL);
+            HMInfo.fNum[2] = strtof(AnalysisData[4],NULL);
+
+            //更新艏向环PID
+            Algo_PID_Update(&YawPID,HMInfo.fNum);
+            printf("YawPID %.2f %.2f %.2f\r\n",YawPID.fKp,YawPID.fKi,YawPID.fKd);
+        }
+        //巡线环PID
+        else if(!rt_strcmp(AnalysisData[1],"LinePatrolPID"))
+        {
+            HMInfo.fNum[0] = strtof(AnalysisData[2],NULL);
+            HMInfo.fNum[1] = strtof(AnalysisData[3],NULL);
+            HMInfo.fNum[2] = strtof(AnalysisData[4],NULL);
+            
+            //更新巡线环PID
+            Algo_PID_Update(&LinePatrolPID,HMInfo.fNum);
+            printf("LinePatrolPID %.2f %.2f %.2f\r\n",LinePatrolPID.fKp,LinePatrolPID.fKi,LinePatrolPID.fKd);
+        }
     }
 }
 

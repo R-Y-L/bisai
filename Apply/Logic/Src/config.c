@@ -67,7 +67,7 @@ tagJY901_T JY901S =
 
 	.tUART.tRxInfo.usDMARxMAXSize             	= 100,                 /* 接收数据长度 长度保持在协议最长字节*2以上，确保缓存池一定能够稳定接收一个完整的数据帧*/
 
-    .tUART.tUartDMA.bRxEnable					= true,						/* DMA接收使能 */
+    .tUART.tUartDMA.bRxEnable					= true,					/* DMA接收使能 */
 };
 
 /* MS5837示例 */

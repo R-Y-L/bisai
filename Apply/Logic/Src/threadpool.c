@@ -7,6 +7,8 @@
 #include "algo_conf.h"		/* Algo层头文件配置 */
 #include "config.h"			/* I/O配置头文件配置 */
 
+//存储所有推进器的数据
+PWMInfo_T PWMInfo = {1500,1500,1500,1500};
 
 /* 线程入口函数（使用裸机忽略此文件） */
 /* 读取上位机数据线程 */
@@ -37,7 +39,6 @@ void DataFromIPC(void* paramenter)
             }
         }
         Drv_Delay_Ms(1);    //让出CPU资源给低优先级线程
-        rt_thread_yield();
     }
 }
 
@@ -75,7 +76,6 @@ void MS5837ReadThread(void* paramenter)
         if(MS5837.fDepth != 153150.250000)  //未接MS5837的错误数据
             printf("M %f\r\n",MS5837.fDepth);
         Drv_Delay_Ms(1000);
-        rt_thread_yield();
     }
 }
 
@@ -98,6 +98,8 @@ void MODE_HANDLE(void* paramenter)
                     if(rt_mq_recv(AutoModemq,&ClearBuf,sizeof(AutoModeInfo),RT_WAITING_NO) != RT_EOK)
                         break;
                 }
+                Task_Thruster_AllStop();                //所有推进器停转
+                
                 printf("Switch to AUTO Mode\r\n");
                 rt_enter_critical();                    //调度器上锁
                 rt_thread_suspend(rt_thread_self());    //挂起本线程
@@ -109,14 +111,13 @@ void MODE_HANDLE(void* paramenter)
             {
                 Task_HandleMode_Process(HMInfo);    //手柄控制模式处理函数
                 Drv_Delay_Ms(500);  //执行时间与上位机手柄发送一帧数据时间相同
-                Task_Thruster_SpeedSet(1,STOP_PWM_VALUE);
-                Task_Thruster_SpeedSet(2,STOP_PWM_VALUE);
+                Task_Thruster_Stop(LeftHThruster);
+                Task_Thruster_Stop(RightHThruster);
             }
         }
         // printf("HANDLE\r\n");
 
         Drv_Delay_Ms(1);    //让出CPU资源给低优先级线程
-        rt_thread_yield();
     }
 }
 
@@ -142,6 +143,8 @@ void MODE_AUTO(void* paramenter)
                     if(rt_mq_recv(HandleModemq,&ClearBuf,sizeof(HandleModeInfo),RT_WAITING_NO) != RT_EOK)
                         break;
                 }
+                Task_Thruster_AllStop();                //所有推进器停转
+
                 printf("Switch to HANDLE Mode\r\n");
                 rt_enter_critical();                    //调度器上锁
                 rt_thread_suspend(rt_thread_self());    //挂起本线程
@@ -155,15 +158,14 @@ void MODE_AUTO(void* paramenter)
                 Task_AutoMode_Process(AMInfo);
                 //printf("%f\r\n",AMInfo.BlackAngle);
                 Drv_Delay_Ms(300);
-                Task_Thruster_SpeedSet(1,STOP_PWM_VALUE);
-                Task_Thruster_SpeedSet(2,STOP_PWM_VALUE);
+                Task_Thruster_Stop(LeftHThruster);
+                Task_Thruster_Stop(RightHThruster);
             }
         }
 
         // printf("AUTO\r\n");
         // Drv_Delay_Ms(1000);
         Drv_Delay_Ms(1);    //让出CPU资源给低优先级线程
-        rt_thread_yield();
     }
 }
 
@@ -172,8 +174,8 @@ void TestThread(void* paramenter)
 {
     while(1)
     {
+        //printf("test\r\n");
         Drv_Delay_Ms(1000);
-        rt_thread_yield();
     }
 }
 

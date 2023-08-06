@@ -14,7 +14,9 @@
             "sstream": "c",
             "task_handlemode.h": "c",
             "task_automode.h": "c",
-            "drv_hal_conf.h": "c"
+            "drv_hal_conf.h": "c",
+            "threadpool.h": "c",
+            "stdint.h": "c"
         }
     },
     "extensions": {}

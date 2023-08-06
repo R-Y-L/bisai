@@ -2,7 +2,7 @@
 
 #include "config.h"
 
-
+extern PWMInfo_T PWMInfo;
 /**
  * @brief 电机初始化
  * @param null
@@ -12,7 +12,7 @@ void Task_Thruster_Init(void)
 {
 	Drv_Delay_Ms(6000);		/* 初始停转信号后等待稳定 */
 	
-	/* 停转，1500hz(7.5%占空比) */
+	/* 停转，1500ms(7.5%占空比) */
 	Drv_PWM_HighLvTimeSet(&PWM[0], STOP_PWM_VALUE);
 	Drv_PWM_HighLvTimeSet(&PWM[1], STOP_PWM_VALUE);
 	Drv_PWM_HighLvTimeSet(&PWM[2], STOP_PWM_VALUE);
@@ -29,7 +29,8 @@ void Task_Thruster_Init(void)
 */
 void Task_Thruster_SpeedSet(int index,uint16_t _Htime)
 {
-	Drv_PWM_HighLvTimeSet(&PWM[index-1], _Htime);
+	Drv_PWM_HighLvTimeSet(&PWM[index], _Htime);
+	PWMInfo.PWMout[index] = _Htime;
 }
 
 /**
@@ -65,10 +66,10 @@ void Task_Thruster_Start(int index,uint16_t _HTime)
 */
 void Task_Thruster_AllStart(float *adress)
 {
-	Task_Thruster_Start(1,*adress+STOP_PWM_VALUE);
-	Task_Thruster_Start(2,*(adress+1)+STOP_PWM_VALUE);
-	Task_Thruster_Start(3,*(adress+2)+STOP_PWM_VALUE);
-	Task_Thruster_Start(4,*(adress+3)+STOP_PWM_VALUE);
+	Task_Thruster_Start(0,*adress+STOP_PWM_VALUE);
+	Task_Thruster_Start(1,*(adress+1)+STOP_PWM_VALUE);
+	Task_Thruster_Start(2,*(adress+2)+STOP_PWM_VALUE);
+	Task_Thruster_Start(3,*(adress+3)+STOP_PWM_VALUE);
 }
 
 /**
@@ -79,7 +80,8 @@ void Task_Thruster_AllStart(float *adress)
 void Task_Thruster_Stop(int index)
 {
 	/* 电机运行速度设置 */
-	Drv_PWM_HighLvTimeSet(&PWM[index-1], STOP_PWM_VALUE);
+	Drv_PWM_HighLvTimeSet(&PWM[index], STOP_PWM_VALUE);
+	PWMInfo.PWMout[index] = STOP_PWM_VALUE;
 }
 
 /**
@@ -89,9 +91,9 @@ void Task_Thruster_Stop(int index)
 */
 void Task_Thruster_AllStop(void)
 {
+	Task_Thruster_Stop(0);
 	Task_Thruster_Stop(1);
 	Task_Thruster_Stop(2);
 	Task_Thruster_Stop(3);
-	Task_Thruster_Stop(4);
 }
 
