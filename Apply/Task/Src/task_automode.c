@@ -10,6 +10,8 @@ void Task_AutoMode_Process(AutoModeInfo AMInfo)
     float CurrYaw = 0.0f;       //当前艏向角来自JY901S
     float ExpYaw = 0.0f;        //期望艏向角
     float PIDOut = 0.0;         //PID计算后的结果
+    float Pro = 50;
+    float temp;
 
     //存储黑线角度
     Angle = AMInfo.BlackAngle;
@@ -23,25 +25,36 @@ void Task_AutoMode_Process(AutoModeInfo AMInfo)
     PIDOut = Algo_PID_Calculate(&LinePatrolPID,CurrYaw,ExpYaw);
     //printf("PIDOut %f\r\n",PIDOut);
 
+    //超过1500us为前进方向
     if(Angle >= -90 && Angle <= 90) //朝第一、二象限运动
     {
-        PWMInfo.PWMout[LeftHThruster] =  -PIDOut /2 + STOP_PWM_VALUE + 50;   //正负PIDOut看推进器
-        PWMInfo.PWMout[RightHThruster] =  PIDOut /2 + STOP_PWM_VALUE + 50;   
+        PWMInfo.PWMout[LeftHThruster] =  -PIDOut*Pro/100 + STOP_PWM_VALUE + 100;
+        PWMInfo.PWMout[RightHThruster] =  PIDOut*Pro/100 + STOP_PWM_VALUE + 100;
+
+        if(Angle < 0 && Angle >= -90)
+        {
+            if(PWMInfo.PWMout[LeftHThruster] > PWMInfo.PWMout[RightHThruster])
+            {
+                temp = PWMInfo.PWMout[LeftHThruster];
+                PWMInfo.PWMout[LeftHThruster] = PWMInfo.PWMout[RightHThruster];
+                PWMInfo.PWMout[RightHThruster] = temp;   
+            }
+        }
+        else
+        {
+            if(PWMInfo.PWMout[LeftHThruster] < PWMInfo.PWMout[RightHThruster])
+            {
+                temp = PWMInfo.PWMout[LeftHThruster];
+                PWMInfo.PWMout[LeftHThruster] = PWMInfo.PWMout[RightHThruster];
+                PWMInfo.PWMout[RightHThruster] = temp;   
+            }
+        }
     }
-    else
+    
+    if(Angle == 0)
     {
-        if(PIDOut > 0)      //朝第三象限运动
-        {
-            //printf("3\r\n");
-            PWMInfo.PWMout[LeftHThruster] =  -PIDOut * 1/4 /2 + STOP_PWM_VALUE -50;
-            PWMInfo.PWMout[RightHThruster] = -PIDOut * 3/4 /2 + STOP_PWM_VALUE -50;
-        }
-        else                //朝第四象限运动
-        {
-            //printf("4\r\n");
-            PWMInfo.PWMout[LeftHThruster] =  PIDOut * 3/4 /2 + STOP_PWM_VALUE -50;
-            PWMInfo.PWMout[RightHThruster] = PIDOut * 1/4 /2 + STOP_PWM_VALUE -50;
-        }
+        PWMInfo.PWMout[LeftHThruster] = 1550;
+        PWMInfo.PWMout[RightHThruster] = 1550;
     }
 
     //PWM限幅，0.6A
@@ -56,5 +69,4 @@ void Task_AutoMode_Process(AutoModeInfo AMInfo)
     Task_Thruster_SpeedSet(RightHThruster,PWMInfo.PWMout[RightHThruster]);
 
     //printf("Auto left%d right%d\r\n",PWMInfo.PWMout[LeftHThruster],PWMInfo.PWMout[RightHThruster]);
-    printf("T %d %d %d %d\r\n",PWMInfo.PWMout[LeftHThruster],PWMInfo.PWMout[RightHThruster],PWMInfo.PWMout[LeftVThruster],PWMInfo.PWMout[RightVThruster]);
 }

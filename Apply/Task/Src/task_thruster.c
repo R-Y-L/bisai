@@ -30,7 +30,6 @@ void Task_Thruster_Init(void)
 void Task_Thruster_SpeedSet(int index,uint16_t _Htime)
 {
 	Drv_PWM_HighLvTimeSet(&PWM[index], _Htime);
-	PWMInfo.PWMout[index] = _Htime;
 }
 
 /**

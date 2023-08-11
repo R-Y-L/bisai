@@ -14,6 +14,12 @@ typedef struct
     float BlackAngle;       //黑线角度
 }AutoModeInfo;
 
+typedef struct
+{
+    float setDepth;         //设定深度
+}DepthControlInfo;
+
+
 void Task_AnalysisData(uint8_t *DataBuf);
 
 #endif

@@ -63,6 +63,7 @@ void JY901SReadThread(void* paramenter)
                             JY901S.stcAngle.ConYaw);
             }
 		}
+        Drv_Delay_Ms(1);    //让出CPU资源给低优先级线程
 		rt_thread_yield();
     }
 }
@@ -73,14 +74,15 @@ void MS5837ReadThread(void* paramenter)
     while(1)
     {
         OCD_MS5837_GetData(&MS5837);
-        if(MS5837.fDepth != 153150.250000)  //未接MS5837的错误数据
-            printf("M %f\r\n",MS5837.fDepth);
-        Drv_Delay_Ms(1000);
+        if(MS5837.fDepth == 153150.250000)  //未接MS5837的错误数据
+            MS5837.fDepth = 0;
+        printf("M %0.2f\r\n",MS5837.fDepth);
+        Drv_Delay_Ms(600);
     }
 }
 
 /* 手柄控制线程 */
-void MODE_HANDLE(void* paramenter)
+void HANDLE_MODE(void* paramenter)
 {
     HandleModeInfo HMInfo;
     AutoModeInfo ClearBuf;
@@ -122,7 +124,7 @@ void MODE_HANDLE(void* paramenter)
 }
 
 /* 巡线模式线程 */
-void MODE_AUTO(void* paramenter)
+void AUTO_MODE(void* paramenter)
 {
     AutoModeInfo AMInfo;
     HandleModeInfo ClearBuf;
@@ -169,14 +171,63 @@ void MODE_AUTO(void* paramenter)
     }
 }
 
+/* 定深控制 */
+void DepthControl(void* paramenter)
+{
+    DepthControlInfo DCInfo;
+    float ExpDepth = 0.0f;
+    float CurrDepth = 0.0f;
+
+    while(1)
+    {
+        //定深数据消息队列接收到数据，将开始定深控制
+        if(rt_mq_recv(DepthControlmq,&DCInfo,sizeof(DepthControlInfo),RT_WAITING_NO) == RT_EOK)
+        {
+            ExpDepth = DCInfo.setDepth;
+            //printf("%f",ExpDepth);
+        }
+
+        //获取当前深度
+        CurrDepth = MS5837.fDepth;
+        //定深控制函数
+        task_DepthControl_Process(CurrDepth,ExpDepth);
+
+        Drv_Delay_Ms(600);    //每隔一段时间进行一次定深
+    }
+}
+
+/* 汇报PWMout值 */
+void ReportPWMout(void* paramenter)
+{
+    while(1)
+    {
+        printf("T %d %d %d %d\r\n",
+                    PWMInfo.PWMout[LeftHThruster],
+                    PWMInfo.PWMout[RightHThruster],
+                    PWMInfo.PWMout[LeftVThruster],
+                    PWMInfo.PWMout[RightVThruster]);
+        Drv_Delay_Ms(1000);    //每隔一段时间进行一次汇报
+    }
+}
+
 /* 测试线程 */
 void TestThread(void* paramenter)
 {
     while(1)
     {
+        
+        Task_Thruster_AllSpeedSet(1500);
         //printf("test\r\n");
         Drv_Delay_Ms(1000);
+        
+        Task_Thruster_AllSpeedSet(1550);
+        
+        Drv_Delay_Ms(1000);
     }
+    //超过1500为前进 0号为左侧水平推进器
+    //超过1500为上浮 1号为左侧垂直推进器
+    //超过1500为上浮 2号为右侧垂直推进器
+    //超过1500为前进 3号为右侧水平推进器
 }
 
 

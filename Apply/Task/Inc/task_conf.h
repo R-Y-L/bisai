@@ -10,5 +10,6 @@
 #include "task_thruster.h"
 #include "task_handlemode.h"
 #include "task_automode.h"
+#include "task_depthcontrol.h"
 
 #endif

@@ -22,7 +22,7 @@
 #include "threadpool.h"		/* threadpool头文件 */
 #endif
 
-#define PRINTF_UART	USART1				/* printf使用的串口 */
+#define PRINTF_UART	USART3				/* printf使用的串口 */
 
 /* STM32芯片选择 */
 #ifdef STM32F1_SGA_ENABLE

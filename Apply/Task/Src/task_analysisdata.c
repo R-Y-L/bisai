@@ -12,6 +12,7 @@ void Task_AnalysisData(uint8_t *DataBuf)
     rt_memset(AnalysisData,0,sizeof(AnalysisData));
     HandleModeInfo HMInfo = {" ",0,0,0};
     AutoModeInfo AMInfo = {" ",0};
+    DepthControlInfo DCInfo = {0};
     AnalysisNum = 0;
 
     //根据格式切分字符串存放到二维数组中
@@ -84,7 +85,15 @@ void Task_AnalysisData(uint8_t *DataBuf)
     else if(!rt_strcmp(AnalysisData[0],"LP"))
     {
         AMInfo.BlackAngle = strtof(AnalysisData[1],NULL);
+        //printf("LP %f\r\n",AMInfo.BlackAngle);
         rt_mq_send(AutoModemq,&AMInfo,sizeof(AutoModeInfo));
+    }
+
+    //定深数值
+    else if(!rt_strcmp(AnalysisData[0],"D"))
+    {
+        DCInfo.setDepth = strtof(AnalysisData[1],NULL);
+        rt_mq_send(DepthControlmq,&DCInfo,sizeof(DepthControlInfo));
     }
 
     //模式切换命令

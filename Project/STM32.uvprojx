@@ -52,7 +52,7 @@
           <OutputName>STM32</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
-          <CreateHexFile>0</CreateHexFile>
+          <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
           <ListingPath>.\Listings\</ListingPath>
@@ -441,6 +441,11 @@
               <FileName>task_automode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Apply\Task\Src\task_automode.c</FilePath>
+            </File>
+            <File>
+              <FileName>task_depthcontrol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Apply\Task\Src\task_depthcontrol.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -29,5 +29,5 @@ void Task_UserInit(void)
     //printf("PWM INIT!\r\n");
 
     //推进器上电初始化
-    //Task_Thruster_Init();
+    Task_Thruster_Init();
 }

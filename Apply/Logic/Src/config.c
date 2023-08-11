@@ -20,8 +20,8 @@
 /* 深度环PID */
 tagPID_T DepthPID = 
 {
-	.fKp = 0,
-	.fKi = 0,
+	.fKp = 1,
+	.fKi = 0.1,
 	.fKd = 0,
 };
 
@@ -29,14 +29,14 @@ tagPID_T DepthPID =
 tagPID_T YawPID = 
 {
 	.fKp = 1,
-	.fKi = 0.1,
-	.fKd = 0,
+	.fKi = 0.2,
+	.fKd = 0.1,
 };
 
 /* 巡线PID */
 tagPID_T LinePatrolPID = 
 {
-	.fKp = 2,
+	.fKp = 1,
 	.fKi = 0.1,
 	.fKd = 0,
 };
@@ -62,7 +62,7 @@ tagUART_T Uart3 =
 tagJY901_T JY901S = 
 {
 	.tConfig.ucBaud 	= JY901_RXBAUD_9600,
-	.tConfig.ucRate		= JY901_RX_1HZ,
+	.tConfig.ucRate		= JY901_RX_2HZ,
 	.tConfig.usType		= JY901_OUTPUT_ANGLE,
 
 	.tUART.tRxInfo.usDMARxMAXSize             	= 100,                 /* 接收数据长度 长度保持在协议最长字节*2以上，确保缓存池一定能够稳定接收一个完整的数据帧*/
@@ -100,32 +100,12 @@ tagPWM_T PWM[] =
 		.tPWMHandle.Instance	= TIM1,         	/* 定时器1 */
 		.fDuty					= 7.5,				/* 初始占空比（%） */
 		.ulFreq					= 50,				/* 频率（Hz） */
-		.ucChannel				= TIM_CHANNEL_1,	/* 通道 */
-		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_9,		/* IO映射 */
-		.tGPIO.tGPIOPort		= GPIOE,			/* IO组映射 */
-		.tGPIO.ucAFMode			= FULL_REMAP,		/* IO重映射模式 */
-	},
-	[1] =
-	{
-		.tPWMHandle.Instance	= TIM1,         	/* 定时器1 */
-		.fDuty					= 7.5,				/* 初始占空比（%） */
-		.ulFreq					= 50,				/* 频率（Hz） */
 		.ucChannel				= TIM_CHANNEL_2,	/* 通道 */
 		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_11,		/* IO映射 */
 		.tGPIO.tGPIOPort		= GPIOE,			/* IO组映射 */
 		.tGPIO.ucAFMode			= FULL_REMAP,		/* IO重映射模式 */
 	},
-	[2] =
-	{
-		.tPWMHandle.Instance	= TIM1,         	/* 定时器1 */
-		.fDuty					= 7.5,				/* 初始占空比（%） */
-		.ulFreq					= 50,				/* 频率（Hz） */
-		.ucChannel				= TIM_CHANNEL_3,	/* 通道 */
-		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_13,		/* IO映射 */
-		.tGPIO.tGPIOPort		= GPIOE,			/* IO组映射 */
-		.tGPIO.ucAFMode			= FULL_REMAP,		/* IO重映射模式 */
-	},
-	[3] =
+	[1] =
 	{
 		.tPWMHandle.Instance	= TIM1,         	/* 定时器1 */
 		.fDuty					= 7.5,				/* 初始占空比（%） */
@@ -135,8 +115,7 @@ tagPWM_T PWM[] =
 		.tGPIO.tGPIOPort		= GPIOE,			/* IO组映射 */
 		.tGPIO.ucAFMode			= FULL_REMAP,		/* IO重映射模式 */
 	},
-	//下面4个IO口为备用口
-	[4] =
+	[2] =
 	{
 		.tPWMHandle.Instance	= TIM4,         	/* 定时器4 */
 		.fDuty					= 7.5,				/* 初始占空比（%） */
@@ -145,6 +124,27 @@ tagPWM_T PWM[] =
 		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_6,		/* IO映射 */
 		.tGPIO.tGPIOPort		= GPIOB,			/* IO组映射 */
 		.tGPIO.ucAFMode			= NO_REMAP,			/* IO重映射模式 */
+	},	
+	[3] =
+	{
+		.tPWMHandle.Instance	= TIM4,         	/* 定时器4 */
+		.fDuty					= 7.5,				/* 初始占空比（%） */
+		.ulFreq					= 50,				/* 频率（Hz） */
+		.ucChannel				= TIM_CHANNEL_3,	/* 通道 */
+		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_8,		/* IO映射 */
+		.tGPIO.tGPIOPort		= GPIOB,			/* IO组映射 */
+		.tGPIO.ucAFMode			= NO_REMAP,			/* IO重映射模式 */
+	},	
+	//下面4个IO口为备用口  
+	[4] =
+	{
+		.tPWMHandle.Instance	= TIM1,         	/* 定时器1 */
+		.fDuty					= 7.5,				/* 初始占空比（%） */
+		.ulFreq					= 50,				/* 频率（Hz） */
+		.ucChannel				= TIM_CHANNEL_1,	/* 通道 */
+		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_9,		/* IO映射 */
+		.tGPIO.tGPIOPort		= GPIOE,			/* IO组映射 */
+		.tGPIO.ucAFMode			= FULL_REMAP,		/* IO重映射模式 */
 	},
 	[5] =
 	{
@@ -158,14 +158,14 @@ tagPWM_T PWM[] =
 	},	
 	[6] =
 	{
-		.tPWMHandle.Instance	= TIM4,         	/* 定时器4 */
+		.tPWMHandle.Instance	= TIM1,         	/* 定时器1 */
 		.fDuty					= 7.5,				/* 初始占空比（%） */
 		.ulFreq					= 50,				/* 频率（Hz） */
 		.ucChannel				= TIM_CHANNEL_3,	/* 通道 */
-		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_8,		/* IO映射 */
-		.tGPIO.tGPIOPort		= GPIOB,			/* IO组映射 */
-		.tGPIO.ucAFMode			= NO_REMAP,			/* IO重映射模式 */
-	},	
+		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_13,		/* IO映射 */
+		.tGPIO.tGPIOPort		= GPIOE,			/* IO组映射 */
+		.tGPIO.ucAFMode			= FULL_REMAP,		/* IO重映射模式 */
+	},
 	[7] =
 	{
 		.tPWMHandle.Instance	= TIM4,         	/* 定时器4 */

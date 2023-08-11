@@ -16,7 +16,8 @@
             "task_automode.h": "c",
             "drv_hal_conf.h": "c",
             "threadpool.h": "c",
-            "stdint.h": "c"
+            "stdint.h": "c",
+            "task_depthcontrol.h": "c"
         }
     },
     "extensions": {}

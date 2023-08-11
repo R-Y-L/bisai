@@ -41,6 +41,9 @@
                 "path": "../Apply/Task/Src/task_automode.c"
               },
               {
+                "path": "../Apply/Task/Src/task_depthcontrol.c"
+              },
+              {
                 "path": "../Apply/Task/Src/task_handlemode.c"
               },
               {
@@ -89,10 +92,10 @@
             "name": "FatFs",
             "files": [
               {
-                "path": "../Bsp/FatFs/Src/ff.c"
+                "path": "../Bsp/FatFs/Src/diskio.c"
               },
               {
-                "path": "../Bsp/FatFs/Src/diskio.c"
+                "path": "../Bsp/FatFs/Src/ff.c"
               }
             ],
             "folders": []
@@ -110,10 +113,10 @@
                 "path": "../Bsp/OCD/Src/ocd_ds3231.c"
               },
               {
-                "path": "../Bsp/OCD/Src/ocd_jy901.c"
+                "path": "../Bsp/OCD/Src/ocd_fatfs.c"
               },
               {
-                "path": "../Bsp/OCD/Src/ocd_fatfs.c"
+                "path": "../Bsp/OCD/Src/ocd_jy901.c"
               },
               {
                 "path": "../Bsp/OCD/Src/ocd_ms5837.c"
