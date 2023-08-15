@@ -13,6 +13,7 @@ void Task_UserInit(void)
     Algo_PID_Init(&DepthPID);
     Algo_PID_Init(&YawPID);
     Algo_PID_Init(&LinePatrolPID);
+    Algo_PID_Init(&BalancePID);
 
     //≥ı ºªØJY901S
     OCD_JY901_DMAInit(&JY901S);

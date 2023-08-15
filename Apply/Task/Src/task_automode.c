@@ -15,7 +15,7 @@ void Task_AutoMode_Process(AutoModeInfo AMInfo)
 
     //存储黑线角度
     Angle = AMInfo.BlackAngle;
-
+    //printf("Angle %f\r\n",Angle);
     //设定当前角度和期望角度
     CurrYaw = JY901S.stcAngle.ConYaw;
     ExpYaw = CurrYaw - Angle;
@@ -28,8 +28,8 @@ void Task_AutoMode_Process(AutoModeInfo AMInfo)
     //超过1500us为前进方向
     if(Angle >= -90 && Angle <= 90) //朝第一、二象限运动
     {
-        PWMInfo.PWMout[LeftHThruster] =  -PIDOut*Pro/100 + STOP_PWM_VALUE + 100;
-        PWMInfo.PWMout[RightHThruster] =  PIDOut*Pro/100 + STOP_PWM_VALUE + 100;
+        PWMInfo.PWMout[LeftHThruster] =  -PIDOut*Pro/100 + STOP_PWM_VALUE + 50;
+        PWMInfo.PWMout[RightHThruster] =  PIDOut*Pro/100 + STOP_PWM_VALUE + 50;
 
         if(Angle < 0 && Angle >= -90)
         {
@@ -53,8 +53,8 @@ void Task_AutoMode_Process(AutoModeInfo AMInfo)
     
     if(Angle == 0)
     {
-        PWMInfo.PWMout[LeftHThruster] = 1550;
-        PWMInfo.PWMout[RightHThruster] = 1550;
+         PWMInfo.PWMout[LeftHThruster] = 1550;
+         PWMInfo.PWMout[RightHThruster] = 1550;
     }
 
     //PWM限幅，0.6A

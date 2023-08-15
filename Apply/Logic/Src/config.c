@@ -37,8 +37,16 @@ tagPID_T YawPID =
 tagPID_T LinePatrolPID = 
 {
 	.fKp = 1,
-	.fKi = 0.1,
+	.fKi = 0,
 	.fKd = 0,
+};
+
+/* 平衡PID */
+tagPID_T BalancePID = 
+{
+	.fKp = 3,
+	.fKi = 0,
+	.fKd = 0.1,
 };
 
 /* 串口1初始化句柄 */

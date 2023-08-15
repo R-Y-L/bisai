@@ -37,7 +37,7 @@ void UserLogic_Code(void)
 	//if(RT_NULL != DataFromIPC_Sem)	printf("DataFromIPC_Sem create successful\r\n");
 
 	/* 创建消息队列 */
-	AutoModemq = rt_mq_create("AutoModemq",50,10,RT_IPC_FLAG_FIFO);
+	AutoModemq = rt_mq_create("AutoModemq",50,50,RT_IPC_FLAG_FIFO);
 	//if(RT_NULL != AutoModemq)		printf("AutoModemq create successful\r\n");
 	HandleModemq = rt_mq_create("HandleModemq",50,10,RT_IPC_FLAG_FIFO);
 	//if(RT_NULL != HandleModemq)		printf("HandleModemq create successful\r\n");
@@ -87,7 +87,7 @@ void UserLogic_Code(void)
 	// if(RT_NULL != thread7)
 	// 	printf("ReportPWMout create successful\r\n");
 
-	thread8 = rt_thread_create("TestThread",TestThread,NULL,512,8,20);
+	thread8 = rt_thread_create("TestThread",TestThread,NULL,512,2,20);
 	// if(RT_NULL != thread7)
 	// 	printf("TestThread create successful\r\n");
 
@@ -98,6 +98,6 @@ void UserLogic_Code(void)
 	rt_thread_startup(thread5);		//线程5 自动巡线模式
 	//rt_thread_startup(thread6);		//线程6 定深控制
 	rt_thread_startup(thread7);		//线程7 汇报当前PWM输出
-	//rt_thread_startup(thread8);		//线程8 测试线程
+	rt_thread_startup(thread8);		//线程8 测试线程
 
 }

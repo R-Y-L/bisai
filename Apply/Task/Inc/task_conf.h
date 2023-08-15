@@ -11,5 +11,6 @@
 #include "task_handlemode.h"
 #include "task_automode.h"
 #include "task_depthcontrol.h"
+#include "task_balance.h"
 
 #endif

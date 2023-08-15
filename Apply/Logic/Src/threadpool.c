@@ -215,14 +215,12 @@ void TestThread(void* paramenter)
 {
     while(1)
     {
-        
-        Task_Thruster_AllSpeedSet(1500);
-        //printf("test\r\n");
-        Drv_Delay_Ms(1000);
-        
-        Task_Thruster_AllSpeedSet(1550);
-        
-        Drv_Delay_Ms(1000);
+        Task_Balance_Process();
+//				PWMInfo.PWMout[LeftVThruster] = 1455;
+//				PWMInfo.PWMout[RightVThruster] = 1440;
+//				Task_Thruster_SpeedSet(LeftVThruster,PWMInfo.PWMout[LeftVThruster]);
+//				Task_Thruster_SpeedSet(RightVThruster,PWMInfo.PWMout[RightVThruster]);
+        Drv_Delay_Ms(100);
     }
     //超过1500为前进 0号为左侧水平推进器
     //超过1500为上浮 1号为左侧垂直推进器

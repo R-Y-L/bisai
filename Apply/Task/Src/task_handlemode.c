@@ -17,6 +17,20 @@ void Task_HandleMode_Process(HandleModeInfo HMInfo)
     Angle = HMInfo.fNum[0];
     Pro = HMInfo.fNum[1];
 
+    //如果是按键按下得到前进或者后退
+    if(Angle == 0) 
+    {
+        PWMInfo.PWMout[LeftHThruster] = 1600;
+        PWMInfo.PWMout[RightHThruster] = 1600;
+        goto SetPWM;
+    }
+    else if(Angle == 180)
+    {
+        PWMInfo.PWMout[LeftHThruster] = 1400;
+        PWMInfo.PWMout[RightHThruster] = 1400;
+        goto SetPWM;
+    }
+
     //设定当前角度和期望角度
     CurrYaw = JY901S.stcAngle.ConYaw;
     ExpYaw = CurrYaw - Angle;
@@ -32,8 +46,9 @@ void Task_HandleMode_Process(HandleModeInfo HMInfo)
         PWMInfo.PWMout[LeftHThruster] =  -PIDOut/2*Pro/100 + STOP_PWM_VALUE + 100;
         PWMInfo.PWMout[RightHThruster] =  PIDOut/2*Pro/100 + STOP_PWM_VALUE + 100;
 
-        if(Angle < 0 && Angle >= -90)
+        if(Angle < 0 && Angle >= -90)   //第二象限
         {
+            //如果左推进器大于右推进器，则交换数值
             if(PWMInfo.PWMout[LeftHThruster] > PWMInfo.PWMout[RightHThruster])
             {
                 temp = PWMInfo.PWMout[LeftHThruster];
@@ -41,8 +56,9 @@ void Task_HandleMode_Process(HandleModeInfo HMInfo)
                 PWMInfo.PWMout[RightHThruster] = temp;   
             }
         }
-        else
+        else    //第一象限
         {
+            //如果右推进器大于左推进器，则交换数值
             if(PWMInfo.PWMout[LeftHThruster] < PWMInfo.PWMout[RightHThruster])
             {
                 temp = PWMInfo.PWMout[LeftHThruster];
@@ -56,8 +72,9 @@ void Task_HandleMode_Process(HandleModeInfo HMInfo)
         PWMInfo.PWMout[LeftHThruster] =   PIDOut/6* Pro/100 + STOP_PWM_VALUE - 100;
         PWMInfo.PWMout[RightHThruster] = -PIDOut/6* Pro/100 + STOP_PWM_VALUE - 100;
         
-        if(Angle < -90 && Angle >= -179)
+        if(Angle < -90 && Angle >= -179)    //第三象限
         {
+            //如果右推进器大于左推进器，则交换数值
             if(PWMInfo.PWMout[LeftHThruster] < PWMInfo.PWMout[RightHThruster])
             {
                 temp = PWMInfo.PWMout[LeftHThruster];
@@ -65,8 +82,9 @@ void Task_HandleMode_Process(HandleModeInfo HMInfo)
                 PWMInfo.PWMout[RightHThruster] = temp;   
             }
         }
-        else
+        else    //第四象限
         {
+            //如果左推进器大于右推进器，则交换数值
             if(PWMInfo.PWMout[LeftHThruster] > PWMInfo.PWMout[RightHThruster])
             {
                 temp = PWMInfo.PWMout[LeftHThruster];
@@ -74,16 +92,6 @@ void Task_HandleMode_Process(HandleModeInfo HMInfo)
                 PWMInfo.PWMout[RightHThruster] = temp;   
             }
         }
-    }
-    if(Angle == 0) 
-    {
-        PWMInfo.PWMout[LeftHThruster] = 1600;
-        PWMInfo.PWMout[RightHThruster] = 1600;
-    }
-    else if(Angle == 180)
-    {
-        PWMInfo.PWMout[LeftHThruster] = 1400;
-        PWMInfo.PWMout[RightHThruster] = 1400; 
     }
 
     //PWM限幅，0.6A
@@ -93,6 +101,7 @@ void Task_HandleMode_Process(HandleModeInfo HMInfo)
     if(PWMInfo.PWMout[RightHThruster] < 1350)  PWMInfo.PWMout[RightHThruster] = 1350;
     if(PWMInfo.PWMout[RightHThruster] > 1650)  PWMInfo.PWMout[RightHThruster] = 1650;
 
+SetPWM:
     //根据PID结果改变左右翼水平推进器PWM，假设1为左水平推，2为右水平推，超过1500为前进方向
     Task_Thruster_SpeedSet(LeftHThruster,PWMInfo.PWMout[LeftHThruster]);
     Task_Thruster_SpeedSet(RightHThruster,PWMInfo.PWMout[RightHThruster]);

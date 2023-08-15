@@ -23,4 +23,6 @@ extern tagPID_T YawPID;
 
 extern tagPID_T LinePatrolPID;
 
+extern tagPID_T BalancePID;
+
 #endif
