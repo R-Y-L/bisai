@@ -11,7 +11,9 @@ typedef struct
 typedef struct 
 {
     char ModeChange[15];    //存放模式切换命令
-    float BlackAngle;       //黑线角度
+    //uint8_t Status;       //直线状态为0，转弯状态为1
+    float BlackAngle;       //黑线偏移角度[-90,90],顺时针正、逆时针负
+    float CenterShift;      //中心偏移距离[-5000,5000],上正、下负
 }AutoModeInfo;
 
 typedef struct

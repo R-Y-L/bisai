@@ -84,9 +84,10 @@ void Task_AnalysisData(uint8_t *DataBuf)
     //自动巡线模式角度值
     else if(!rt_strcmp(AnalysisData[0],"LP"))
     {
+        //保存数据，LP 角度 位置偏移
         AMInfo.BlackAngle = strtof(AnalysisData[1],NULL);
-        //printf("LP %f\r\n",AMInfo.BlackAngle);
-        rt_mq_send(AutoModemq,&AMInfo,sizeof(AutoModeInfo));
+        AMInfo.CenterShift = strtof(AnalysisData[2],NULL);
+        rt_mq_urgent(AutoModemq,&AMInfo,sizeof(AutoModeInfo));
     }
 
     //定深数值
@@ -140,16 +141,16 @@ void Task_AnalysisData(uint8_t *DataBuf)
             printf("YawPID %.2f %.2f %.2f\r\n",YawPID.fKp,YawPID.fKi,YawPID.fKd);
         }
         //巡线环PID
-        else if(!rt_strcmp(AnalysisData[1],"LinePatrolPID"))
-        {
-            HMInfo.fNum[0] = strtof(AnalysisData[2],NULL);
-            HMInfo.fNum[1] = strtof(AnalysisData[3],NULL);
-            HMInfo.fNum[2] = strtof(AnalysisData[4],NULL);
+        // else if(!rt_strcmp(AnalysisData[1],"LinePatrolPID"))
+        // {
+        //     HMInfo.fNum[0] = strtof(AnalysisData[2],NULL);
+        //     HMInfo.fNum[1] = strtof(AnalysisData[3],NULL);
+        //     HMInfo.fNum[2] = strtof(AnalysisData[4],NULL);
             
-            //更新巡线环PID
-            Algo_PID_Update(&LinePatrolPID,HMInfo.fNum);
-            printf("LinePatrolPID %.2f %.2f %.2f\r\n",LinePatrolPID.fKp,LinePatrolPID.fKi,LinePatrolPID.fKd);
-        }
+        //     //更新巡线环PID
+        //     Algo_PID_Update(&LinePatrolPID,HMInfo.fNum);
+        //     printf("LinePatrolPID %.2f %.2f %.2f\r\n",LinePatrolPID.fKp,LinePatrolPID.fKi,LinePatrolPID.fKd);
+        // }
     }
 }
 

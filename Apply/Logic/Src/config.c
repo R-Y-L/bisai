@@ -33,8 +33,16 @@ tagPID_T YawPID =
 	.fKd = 0.1,
 };
 
-/* 巡线PID */
-tagPID_T LinePatrolPID = 
+/* 角度环PID */
+tagPID_T AngleLoopPID = 
+{
+	.fKp = 1,
+	.fKi = 0,
+	.fKd = 0,
+};
+
+/* 位置环PID */
+tagPID_T PositionLoopPID = 
 {
 	.fKp = 1,
 	.fKi = 0,

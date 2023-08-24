@@ -87,6 +87,8 @@ void HANDLE_MODE(void* paramenter)
     HandleModeInfo HMInfo;
     AutoModeInfo ClearBuf;
 
+    // rt_thread_suspend(rt_thread_self());
+    // rt_schedule();
     while(1)
     {
         //手柄控制消息队列接收到数据，将切换到自动模式
@@ -135,7 +137,7 @@ void AUTO_MODE(void* paramenter)
     while(1)
     {
         //自动控制消息队列接收到数据，将切换到手柄模式
-        if(rt_mq_recv(AutoModemq,&AMInfo,sizeof(AutoModeInfo),RT_WAITING_NO) == RT_EOK)
+        if(rt_mq_recv(AutoModemq,&AMInfo,sizeof(AutoModeInfo),RT_WAITING_FOREVER) == RT_EOK)
         {
             if(!rt_strcmp(AMInfo.ModeChange,"HANDLE START"))
             {
@@ -159,9 +161,9 @@ void AUTO_MODE(void* paramenter)
                 //自动模式处理函数，根据消息队列中传来的黑线角度改变推进器PWM
                 Task_AutoMode_Process(AMInfo);
                 //printf("%f\r\n",AMInfo.BlackAngle);
-                Drv_Delay_Ms(300);
-                Task_Thruster_Stop(LeftHThruster);
-                Task_Thruster_Stop(RightHThruster);
+                // Drv_Delay_Ms(200);
+                // Task_Thruster_Stop(LeftHThruster);
+                // Task_Thruster_Stop(RightHThruster);
             }
         }
 
@@ -206,7 +208,7 @@ void ReportPWMout(void* paramenter)
                     PWMInfo.PWMout[RightHThruster],
                     PWMInfo.PWMout[LeftVThruster],
                     PWMInfo.PWMout[RightVThruster]);
-        Drv_Delay_Ms(1000);    //每隔一段时间进行一次汇报
+        Drv_Delay_Ms(500);    //每隔一段时间进行一次汇报
     }
 }
 

@@ -18,7 +18,8 @@
             "threadpool.h": "c",
             "stdint.h": "c",
             "task_depthcontrol.h": "c",
-            "task_balance.h": "c"
+            "task_balance.h": "c",
+            "main.h": "c"
         }
     },
     "extensions": {}

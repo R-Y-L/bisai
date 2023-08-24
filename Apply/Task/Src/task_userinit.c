@@ -12,7 +12,8 @@ void Task_UserInit(void)
     //初始化PID
     Algo_PID_Init(&DepthPID);
     Algo_PID_Init(&YawPID);
-    Algo_PID_Init(&LinePatrolPID);
+    Algo_PID_Init(&AngleLoopPID);
+    Algo_PID_Init(&PositionLoopPID);
     Algo_PID_Init(&BalancePID);
 
     //初始化JY901S

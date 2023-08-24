@@ -25,4 +25,8 @@ extern tagPID_T LinePatrolPID;
 
 extern tagPID_T BalancePID;
 
+extern tagPID_T AngleLoopPID;
+
+extern tagPID_T PositionLoopPID;
+
 #endif
