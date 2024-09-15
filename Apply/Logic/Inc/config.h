@@ -6,7 +6,45 @@
 #include "algo_conf.h"
 #include "dev_conf.h"
 
-/* ÓÃ»§¾ä±úÉùÃ÷°üº¬Çø */
+//????????????
+typedef struct
+{
+	float Roll;
+	float Pitch;
+	float Yaw;
+	
+}Expect_angle;
+
+/* ç”¨æˆ·å¥æŸ„å£°æ˜åŒ…å«åŒº */
+
+extern volatile char x_y_z_pitch;
+
+extern volatile char left_rocker;
+
+extern volatile char right_rocker;
+
+extern volatile char Mode_control;
+
+extern volatile char State_control;
+
+extern volatile char Light_control;
+
+extern volatile char speed_kH;
+
+extern volatile char speed_kV;
+
+extern volatile float concon_YAW;
+
+extern volatile char ConnetFlag;
+
+extern volatile char BalanceFlag;
+
+extern volatile char Plus;
+
+extern Expect_angle Exp_AngleInfo;
+
+extern tagGPIO_T demoGPIO[];
+
 extern tagUART_T Uart1;
 
 extern tagUART_T Uart3;
@@ -20,6 +58,10 @@ extern tagMS5837_T MS5837;
 extern tagPID_T DepthPID;
 
 extern tagPID_T YawPID;
+
+extern tagPID_T RollPID;
+
+extern tagPID_T PitchPID;
 
 extern tagPID_T LinePatrolPID;
 

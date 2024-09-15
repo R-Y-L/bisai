@@ -289,7 +289,7 @@ static void S_Uart_ParamMatch(tagUART_T *_tUART)
 {
 	/* ´®¿Ú²ÎÊý */
 	DEFAULT(_tUART->tUARTHandle.Instance,USART1);
-	DEFAULT(_tUART->tUARTHandle.Init.BaudRate,115200);
+	DEFAULT(_tUART->tUARTHandle.Init.BaudRate,9600);
 	DEFAULT(_tUART->tUARTHandle.Init.Mode,UART_MODE_TX_RX);
 	DEFAULT(_tUART->tUARTHandle.Init.WordLength,UART_WORDLENGTH_8B);
 	DEFAULT(_tUART->tUARTHandle.Init.StopBits,UART_STOPBITS_1);

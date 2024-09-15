@@ -4,107 +4,273 @@
 
 extern PWMInfo_T PWMInfo;
 
+void HandleMode_data_storage(char key,char Press);
+
+//æ‰‹åŠ¨æ¨¡å¼ä¸»å‡½æ•°
 void Task_HandleMode_Process(HandleModeInfo HMInfo)
 {
-    float Angle = 0.0f;         //´æ´¢ÔË¶¯½Ç¶È [-180,180]
-    float Pro = 0.0f;           //´æ´¢ÍÆ½øÁ¦¶È [0,100]
-    float CurrYaw = 0.0f;       //µ±Ç°ô¼Ïò½ÇÀ´×ÔJY901S
-    float ExpYaw = 0.0f;        //ÆÚÍûô¼Ïò½Ç
-    float PIDOut = 0.0;         //PID¼ÆËãºóµÄ½á¹û
-    float temp;
+    char key = 0;         
+    char Press = 0;           
+	
+    //å­˜å‚¨æ‰‹æŸ„ç»™å‡ºçš„æŒ‰é”®ä¿¡æ¯å’Œæ˜¯å¦æ˜¯æŒ‰ä¸‹
+    key = HMInfo.fNum[0];
+    Press = HMInfo.fNum[1];
+	
+	//ä¿¡æ¯å‚¨å­˜
+    HandleMode_data_storage(key,Press);
+	
+}
 
-    //´æ´¢ÊÖ±ú¸ø³öµÄÔË¶¯½Ç¶ÈºÍÍÆ½øÁ¦¶È
-    Angle = HMInfo.fNum[0];
-    Pro = HMInfo.fNum[1];
+void HandleMode_data_storage(char key,char Press)
+{
+	printf("key = %d , press = %d\r\n",key,Press);
+	switch (key)
+	{
+	//x_y_z_pitch
+		//x
+		case 2://å·¦
+			if(Press)
+			{
+				if(!(x_y_z_pitch & 128))
+					x_y_z_pitch += 128;
+			}
+			else
+			{
+				if(x_y_z_pitch & 128)
+					x_y_z_pitch -= 128;
+			}
+		break;
+			
+		case 1://å³
+			if(Press)
+			{
+				if(!(x_y_z_pitch & 64))
+					x_y_z_pitch += 64;
+			}
+			else
+			{
+				if(x_y_z_pitch & 64)
+					x_y_z_pitch -= 64;
+			}
+		break;
+			
+			//y
+		case 3:
+			if(Press)
+			{
+				if(!(x_y_z_pitch & 32))
+					x_y_z_pitch += 32;
+			}
+			else
+			{
+				if(x_y_z_pitch & 32)
+					x_y_z_pitch -= 32;
+			}
+		break;
+			
+		case 0:
+			if(Press)
+			{
+				if(!(x_y_z_pitch & 16))
+					x_y_z_pitch += 16;
+			}
+			else
+			{
+				if(x_y_z_pitch & 16)
+					x_y_z_pitch -= 16;
+			}
+		break;
+			
+			//z
+		case 4://ä¸‹æ²‰ï¼ˆå‚æ¨åäº†ï¼‰
+			if(Press)
+			{
+				if(!(x_y_z_pitch & 8))
+					x_y_z_pitch += 8;
+			}
+			else
+			{
+				if(x_y_z_pitch & 8)
+					x_y_z_pitch -= 8;
+			}
+		break;
+			
+		case 7:
+			if(Press)
+			{
+				if(!(x_y_z_pitch & 4))
+					x_y_z_pitch += 4;
+			}
+			else
+			{
+				if(x_y_z_pitch & 4)
+					x_y_z_pitch -= 4;
+			}
+		break;
+			
+			//pitchä¿¯ä»°
+		case 5:
+			if(Press)
+			{
+				if(!(x_y_z_pitch & 2))
+					x_y_z_pitch += 2;
+			}
+			else
+			{
+				if(x_y_z_pitch & 2)
+					x_y_z_pitch -= 2;
+			}
+		break;
+			
+		case 6:
+			if(Press)
+			{
+				if(!(x_y_z_pitch & 1))
+					x_y_z_pitch += 1;
+			}
+			else
+			{
+				if(x_y_z_pitch & 1)
+					x_y_z_pitch -= 1;
+			}
+		break;
+			
+			
+			//å¤¹ã€æ¾æ§åˆ¶ä½¿ç”¨RBå’ŒLB
+			
+		   case 10:
+			if(Press)
+				{
+					if(!(Mode_control & 2))
+						Mode_control += 2;
+				}
+			else
+			{
+					if((Mode_control & 2))
+						Mode_control -= 2;
+			}
+	    	break;
 
-    //Èç¹ûÊÇ°´¼ü°´ÏÂµÃµ½Ç°½ø»òÕßºóÍË
-    if(Angle == 0) 
-    {
-        PWMInfo.PWMout[LeftHThruster] = 1600;
-        PWMInfo.PWMout[RightHThruster] = 1600;
-        goto SetPWM;
+			case 11:
+			if(Press)
+				{
+					if(!(Mode_control & 4))
+						Mode_control += 4;
+				}
+			else
+			{
+					if((Mode_control & 4))
+						Mode_control -= 4;
+			}
+	    	break;
+			
+			case 18:
+			left_rocker = 1;
+		break;
+			
+			case 19:
+			left_rocker = 2;
+		break;
+			
+			case 20:
+			left_rocker = 3;
+		break;
+			
+			case 21:
+			left_rocker = 4;
+		break;
+			
+			case 23:
+				left_rocker = 0;
+	       break;
+
+			//å³å·¦ä¸­
+			case 14:
+				right_rocker = 1;
+				//Mode_control |= 1;
+			break;
+			
+			case 15:
+				right_rocker = 2;
+			//	Mode_control |= 1;
+			break;
+			
+			case 16://å³
+			    right_rocker = 3;
+				//Mode_control |= 1;
+			break;
+			
+			case 17://å·¦
+			    right_rocker = 4;
+				//Mode_control |= 1;
+			break;
+			
+			case 22:
+				right_rocker = 0;
+				//Mode_control |= 1;
+			break;
+			
+		   case 12:
+			if(Press)
+				{
+					if(!(State_control & 2))
+						State_control += 2;
+				}
+				else
+				{
+						//æ¸…0çŠ¶æ€ä½ï¼Œè¿›å…¥åœæ­¢
+						if((State_control & 2))
+						State_control -= 2;
+				}
+	    	break;
+		   case 13:
+			if(Press)
+				{
+					if(!(State_control & 1))
+						State_control += 1;
+				}
+				else
+				{
+						//æ¸…0çŠ¶æ€ä½ï¼Œè¿›å…¥åœæ­¢
+						if((State_control & 1))
+						State_control -= 1;
+				}
+	    	break;
+		//ç¯å…‰æ§åˆ¶æŒ‰é”®
+		// //äº®ç¯
+		// case 8:
+		// 	if(Press)
+		// 	{
+		// 		if(!(Light_control & 1))
+		// 			Light_control += 1;
+		// 	}
+		// break;
+		// //æš—ç¯
+		// case 9:
+		// 	if(Press)
+		// 	{
+		// 		if(!(Light_control & 2))
+		// 			Light_control += 2;
+		// 	}
+		// break;
+
+		//starté”®
+			//å®šå§¿æ€»å¼€å…³ä½¿ç”¨BalanceFlagç¬¬ä¸€ä½
+			case 8:
+			if(Press)
+				{
+					//æŒ‰ä¸‹ï¼Œæ¸…é™¤æˆ–æ ‡å¿—ä½ç½®1
+					if(BalanceFlag & 0x01)
+					{
+						BalanceFlag &= ~1;//æ¸…é™¤æ ‡å¿—ä½
+					}
+					else
+					{
+						Expect_angle_Init();
+						concon_YAW = JY901S.stcAngle.ConYaw;
+						BalanceFlag |= 1;//æ ‡å¿—ä½ç½®1
+					}
+				}
+			break;
     }
-    else if(Angle == 180)
-    {
-        PWMInfo.PWMout[LeftHThruster] = 1400;
-        PWMInfo.PWMout[RightHThruster] = 1400;
-        goto SetPWM;
-    }
-
-    //Éè¶¨µ±Ç°½Ç¶ÈºÍÆÚÍû½Ç¶È
-    CurrYaw = JY901S.stcAngle.ConYaw;
-    ExpYaw = CurrYaw - Angle;
-    //printf("ExpYaw %f\r\n",ExpYaw);
-
-    //ô¼ÏòPIDÔËËã
-    PIDOut = Algo_PID_Calculate(&YawPID,CurrYaw,ExpYaw);
-    //printf("PIDOut %f\r\n",PIDOut);
-
-    //³¬¹ı1500usÎªÇ°½ø·½Ïò
-    if(Angle >= -90 && Angle <= 90) //³¯µÚÒ»¡¢¶şÏóÏŞÔË¶¯
-    {
-        PWMInfo.PWMout[LeftHThruster] =  -PIDOut/2*Pro/100 + STOP_PWM_VALUE + 100;
-        PWMInfo.PWMout[RightHThruster] =  PIDOut/2*Pro/100 + STOP_PWM_VALUE + 100;
-
-        if(Angle < 0 && Angle >= -90)   //µÚ¶şÏóÏŞ
-        {
-            //Èç¹û×óÍÆ½øÆ÷´óÓÚÓÒÍÆ½øÆ÷£¬Ôò½»»»ÊıÖµ
-            if(PWMInfo.PWMout[LeftHThruster] > PWMInfo.PWMout[RightHThruster])
-            {
-                temp = PWMInfo.PWMout[LeftHThruster];
-                PWMInfo.PWMout[LeftHThruster] = PWMInfo.PWMout[RightHThruster];
-                PWMInfo.PWMout[RightHThruster] = temp;   
-            }
-        }
-        else    //µÚÒ»ÏóÏŞ
-        {
-            //Èç¹ûÓÒÍÆ½øÆ÷´óÓÚ×óÍÆ½øÆ÷£¬Ôò½»»»ÊıÖµ
-            if(PWMInfo.PWMout[LeftHThruster] < PWMInfo.PWMout[RightHThruster])
-            {
-                temp = PWMInfo.PWMout[LeftHThruster];
-                PWMInfo.PWMout[LeftHThruster] = PWMInfo.PWMout[RightHThruster];
-                PWMInfo.PWMout[RightHThruster] = temp;   
-            }
-        }
-    }
-    else
-    {
-        PWMInfo.PWMout[LeftHThruster] =   PIDOut/6* Pro/100 + STOP_PWM_VALUE - 100;
-        PWMInfo.PWMout[RightHThruster] = -PIDOut/6* Pro/100 + STOP_PWM_VALUE - 100;
-        
-        if(Angle < -90 && Angle >= -179)    //µÚÈıÏóÏŞ
-        {
-            //Èç¹ûÓÒÍÆ½øÆ÷´óÓÚ×óÍÆ½øÆ÷£¬Ôò½»»»ÊıÖµ
-            if(PWMInfo.PWMout[LeftHThruster] < PWMInfo.PWMout[RightHThruster])
-            {
-                temp = PWMInfo.PWMout[LeftHThruster];
-                PWMInfo.PWMout[LeftHThruster] = PWMInfo.PWMout[RightHThruster];
-                PWMInfo.PWMout[RightHThruster] = temp;   
-            }
-        }
-        else    //µÚËÄÏóÏŞ
-        {
-            //Èç¹û×óÍÆ½øÆ÷´óÓÚÓÒÍÆ½øÆ÷£¬Ôò½»»»ÊıÖµ
-            if(PWMInfo.PWMout[LeftHThruster] > PWMInfo.PWMout[RightHThruster])
-            {
-                temp = PWMInfo.PWMout[LeftHThruster];
-                PWMInfo.PWMout[LeftHThruster] = PWMInfo.PWMout[RightHThruster];
-                PWMInfo.PWMout[RightHThruster] = temp;   
-            }
-        }
-    }
-
-    //PWMÏŞ·ù£¬0.6A
-    if(PWMInfo.PWMout[LeftHThruster] < 1350)  PWMInfo.PWMout[LeftHThruster] = 1350;
-    if(PWMInfo.PWMout[LeftHThruster] > 1650)  PWMInfo.PWMout[LeftHThruster] = 1650;
-
-    if(PWMInfo.PWMout[RightHThruster] < 1350)  PWMInfo.PWMout[RightHThruster] = 1350;
-    if(PWMInfo.PWMout[RightHThruster] > 1650)  PWMInfo.PWMout[RightHThruster] = 1650;
-
-SetPWM:
-    //¸ù¾İPID½á¹û¸Ä±ä×óÓÒÒíË®Æ½ÍÆ½øÆ÷PWM£¬¼ÙÉè1Îª×óË®Æ½ÍÆ£¬2ÎªÓÒË®Æ½ÍÆ£¬³¬¹ı1500ÎªÇ°½ø·½Ïò
-    Task_Thruster_SpeedSet(LeftHThruster,PWMInfo.PWMout[LeftHThruster]);
-    Task_Thruster_SpeedSet(RightHThruster,PWMInfo.PWMout[RightHThruster]);
-
-    //printf("Handle left%d right%d\r\n",PWMInfo.PWMout[LeftHThruster],PWMInfo.PWMout[RightHThruster]);
 }

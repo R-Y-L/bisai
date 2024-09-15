@@ -1,12 +1,15 @@
-#include "usercode.h"		/* usercodeÍ·ÎÄ¼ş */
-#include "drv_hal_conf.h"   /* SGA¿âÍ·ÎÄ¼şÅäÖÃ */
-#include "task_conf.h"      /* task²ãÍ·ÎÄ¼şÅäÖÃ */
-#include "ocd_conf.h"       /* OCD²ãÍ·ÎÄ¼şÅäÖÃ */
-#include "dev_conf.h"		/* Dev²ãÍ·ÎÄ¼şÅäÖÃ */
-#include "algo_conf.h"		/* Algo²ãÍ·ÎÄ¼şÅäÖÃ */
-#include "config.h"			/* I/OÅäÖÃÍ·ÎÄ¼şÅäÖÃ */
+#include "usercode.h"		/* usercodeå¤´æ–‡ä»¶ */
+#include "drv_hal_conf.h"   /* SGAåº“å¤´æ–‡ä»¶é…ç½® */
+#include "task_conf.h"      /* taskå±‚å¤´æ–‡ä»¶é…ç½® */
+#include "ocd_conf.h"       /* OCDå±‚å¤´æ–‡ä»¶é…ç½® */
+#include "dev_conf.h"		/* Devå±‚å¤´æ–‡ä»¶é…ç½® */
+#include "algo_conf.h"		/* Algoå±‚å¤´æ–‡ä»¶é…ç½® */
+#include "config.h"			/* I/Oé…ç½®å¤´æ–‡ä»¶é…ç½® */
 
-/* Ïß³Ì¾ä±ú */
+uint8_t num;
+uint8_t RxData[100];
+
+/* çº¿ç¨‹å¥æŸ„ */
 rt_thread_t thread1 = RT_NULL;
 rt_thread_t thread2 = RT_NULL;
 rt_thread_t thread3 = RT_NULL;
@@ -15,28 +18,30 @@ rt_thread_t thread5 = RT_NULL;
 rt_thread_t thread6 = RT_NULL;
 rt_thread_t thread7 = RT_NULL;
 rt_thread_t thread8 = RT_NULL;
+rt_thread_t thread9 = RT_NULL;
+rt_thread_t thread10 = RT_NULL;
 
-/* ĞÅºÅÁ¿¾ä±ú*/
-rt_sem_t DataFromIPC_Sem = RT_NULL;	//ÉÏÎ»»úÊı¾İĞÅºÅÁ¿
-rt_sem_t JY901S_Sem = RT_NULL;		//JY901SÊı¾İĞÅºÅÁ¿
+/* ä¿¡å·é‡å¥æŸ„*/
+rt_sem_t DataFromIPC_Sem = RT_NULL;	//ä¸Šä½æœºæ•°æ®ä¿¡å·é‡
+rt_sem_t JY901S_Sem = RT_NULL;		//JY901Sæ•°æ®ä¿¡å·é‡
 
-/*ÏûÏ¢¶ÓÁĞ¾ä±ú*/
-rt_mq_t AutoModemq = RT_NULL;		//×Ô¶¯Ä£Ê½ÏûÏ¢¶ÓÁĞ
-rt_mq_t HandleModemq = RT_NULL;		//ÊÖ¶¯Ä£Ê½ÏûÏ¢¶ÓÁĞ
-rt_mq_t DepthControlmq = RT_NULL;	//¶¨ÉîÊı¾İÏûÏ¢¶ÓÁĞ
+/*æ¶ˆæ¯é˜Ÿåˆ—å¥æŸ„*/
+rt_mq_t AutoModemq = RT_NULL;		//è‡ªåŠ¨æ¨¡å¼æ¶ˆæ¯é˜Ÿåˆ—
+rt_mq_t HandleModemq = RT_NULL;		//æ‰‹åŠ¨æ¨¡å¼æ¶ˆæ¯é˜Ÿåˆ—
+rt_mq_t DepthControlmq = RT_NULL;	//å®šæ·±æ•°æ®æ¶ˆæ¯é˜Ÿåˆ—
 
-ALIGN(RT_ALIGN_SIZE)
-/* ÓÃ»§Âß¼­´úÂë */
+//ALIGN(RT_ALIGN_SIZE)
+/* ç”¨æˆ·é€»è¾‘ä»£ç  */
 void UserLogic_Code(void)
 {
-	/* ´´½¨ĞÅºÅÁ¿ */
+	/* åˆ›å»ºä¿¡å·é‡ */
 	JY901S_Sem = rt_sem_create("JY901Sem",0,RT_IPC_FLAG_FIFO);
 	//if(RT_NULL != JY901S_Sem)	printf("JY901Sem create successful\r\n");
 
 	DataFromIPC_Sem = rt_sem_create("DataFromIPC_Sem",0,RT_IPC_FLAG_FIFO);
 	//if(RT_NULL != DataFromIPC_Sem)	printf("DataFromIPC_Sem create successful\r\n");
 
-	/* ´´½¨ÏûÏ¢¶ÓÁĞ */
+	/* åˆ›å»ºæ¶ˆæ¯é˜Ÿåˆ— */
 	AutoModemq = rt_mq_create("AutoModemq",50,50,RT_IPC_FLAG_FIFO);
 	//if(RT_NULL != AutoModemq)		printf("AutoModemq create successful\r\n");
 	HandleModemq = rt_mq_create("HandleModemq",50,10,RT_IPC_FLAG_FIFO);
@@ -45,17 +50,22 @@ void UserLogic_Code(void)
 	//if(RT_NULL != DepthControlmq)		printf("DepthControlmq create successful\r\n");
 
 	/* 
-		Ïß³Ì1 ÉÏÎ»»úÊı¾İ¶ÁÈ¡
-		Ïß³Ì2 JY901SÊı¾İ¶ÁÈ¡
-		Ïß³Ì3 MS5837Êı¾İ¶ÁÈ¡
-		Ïß³Ì4 ÊÖ±úÔË¶¯Ä£Ê½
-		Ïß³Ì5 ×Ô¶¯Ñ²ÏßÄ£Ê½
-		Ïß³Ì6 ¶¨Éî¿ØÖÆ
-		Ïß³Ì7 »ã±¨µ±Ç°PWMÊä³ö
-		Ïß³Ì8 ²âÊÔÏß³Ì
+		çº¿ç¨‹1 ä¸Šä½æœºæ•°æ®è¯»å–
+	rt_thread_startup(thread2);		//çº¿ç¨‹2 JY901Sæ•°æ®è¯»å–
+	rt_thread_startup(thread3);		//çº¿ç¨‹3 MS5837æ•°æ®è¯»å–
+	çº¿ç¨‹4 æ‰‹æŸ„è¿åŠ¨æ¨¡å¼
+	çº¿ç¨‹5 è‡ªåŠ¨å·¡çº¿æ¨¡å¼
+	çº¿ç¨‹6 è¿åŠ¨æ§åˆ¶
+	çº¿ç¨‹7 å®šæ·±æ§åˆ¶
+	çº¿ç¨‹8 ç¼“å¢æ§åˆ¶
+	çº¿ç¨‹9 æ±‡æŠ¥å½“å‰PWMè¾“å‡º
+	çº¿ç¨‹10 æµ‹è¯•çº¿ç¨‹
 	 */
 
-	/* ´´½¨Ïß³Ì */
+  
+
+
+	/* åˆ›å»ºçº¿ç¨‹ */
 	thread1 = rt_thread_create("DataFromIPC",DataFromIPC,NULL,1024,1,20);
 	// if(RT_NULL != thread1)
 	// 	printf("DataFromIPC create successful\r\n");
@@ -79,25 +89,36 @@ void UserLogic_Code(void)
 	// if(RT_NULL != thread5)
 	// 	printf("AUTO_MODE create successful\r\n");
 
-	thread6 = rt_thread_create("DepthControl",DepthControl,NULL,512,2,20);
+	thread6 = rt_thread_create("MotionControl",MotionControl,NULL,512,2,40);
 	// if(RT_NULL != thread6)
 	// 	printf("DepthControl create successful\r\n");
 
-	thread7 = rt_thread_create("ReportPWMout",ReportPWMout,NULL,512,7,20);
+	thread7 = rt_thread_create("DepthControl",ReportPWMout,NULL,512,2,20);
+	// if(RT_NULL != thread7)
+	// 	printf("DepthControl create successful\r\n");
+
+	thread8 = rt_thread_create("PlusControl",PlusControl,NULL,512,4,20);
+	// if(RT_NULL != thread8)
+	// 	printf("ServoControl create successful\r\n");
+
+	thread9 = rt_thread_create("ReportPWMout",ReportPWMout,NULL,512,7,20);
 	// if(RT_NULL != thread7)
 	// 	printf("ReportPWMout create successful\r\n");
 
-	thread8 = rt_thread_create("TestThread",TestThread,NULL,512,2,20);
+	thread10 = rt_thread_create("TestThread",TestThread,NULL,512,2,20);
 	// if(RT_NULL != thread7)
 	// 	printf("TestThread create successful\r\n");
 
-	rt_thread_startup(thread1);		//Ïß³Ì1 ÉÏÎ»»úÊı¾İ¶ÁÈ¡
-	rt_thread_startup(thread2);		//Ïß³Ì2 JY901SÊı¾İ¶ÁÈ¡
-	//rt_thread_startup(thread3);		//Ïß³Ì3 MS5837Êı¾İ¶ÁÈ¡
-	rt_thread_startup(thread4);		//Ïß³Ì4 ÊÖ±úÔË¶¯Ä£Ê½
-	rt_thread_startup(thread5);		//Ïß³Ì5 ×Ô¶¯Ñ²ÏßÄ£Ê½
-	//rt_thread_startup(thread6);		//Ïß³Ì6 ¶¨Éî¿ØÖÆ
-	rt_thread_startup(thread7);		//Ïß³Ì7 »ã±¨µ±Ç°PWMÊä³ö
-	rt_thread_startup(thread8);		//Ïß³Ì8 ²âÊÔÏß³Ì
+	rt_thread_startup(thread1);		//çº¿ç¨‹1 ä¸Šä½æœºæ•°æ®è¯»å–
+	rt_thread_startup(thread2);		//çº¿ç¨‹2 JY901Sæ•°æ®è¯»å–
+	rt_thread_startup(thread3);		//çº¿ç¨‹3 MS5837æ•°æ®è¯»å–
+	rt_thread_startup(thread4);		//çº¿ç¨‹4 æ‰‹æŸ„è¿åŠ¨æ¨¡å¼
+	rt_thread_startup(thread5);		//çº¿ç¨‹5 è‡ªåŠ¨å·¡çº¿æ¨¡å¼
+	rt_thread_startup(thread6);		//çº¿ç¨‹6 è¿åŠ¨æ§åˆ¶
+	rt_thread_startup(thread7);		//çº¿ç¨‹7 å®šæ·±æ§åˆ¶
+//	rt_thread_startup(thread7);		//çº¿ç¨‹7 ç¯å…‰æ§åˆ¶
+	rt_thread_startup(thread8);		//çº¿ç¨‹8 ç¼“å¢æ§åˆ¶
+	rt_thread_startup(thread9);		//çº¿ç¨‹9 æ±‡æŠ¥å½“å‰PWMè¾“å‡º
+	rt_thread_startup(thread10);	//çº¿ç¨‹10 æµ‹è¯•çº¿ç¨‹
 
 }

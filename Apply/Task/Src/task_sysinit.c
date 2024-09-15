@@ -2,8 +2,8 @@
 
 #include "config.h"
 
-/* SGA库初始化函数 */
+/* SGA搴撳垵濮嬪寲鍑芥暟 */
 void Task_Sys_Init(void)
 {
-	Drv_HAL_Init();		/* SGA库启动必需 */
+	Drv_HAL_Init();		/* SGA搴撳惎鍔ㄥ繀闇� */
 }

@@ -3,22 +3,22 @@
 
 typedef struct 
 {
-    char ModeChange[15];    //´æ·ÅÄ£Ê½ÇĞ»»ÃüÁî
-    float fNum[3];          //´æ·Å¸¡µãÊıÊı¾İ
+    char ModeChange[15];    //å­˜æ”¾æ¨¡å¼åˆ‡æ¢å‘½ä»¤
+    float fNum[3];          //å­˜æ”¾æµ®ç‚¹æ•°æ•°æ®
     bool keyPressed;
 }HandleModeInfo;
 
 typedef struct 
 {
-    char ModeChange[15];    //´æ·ÅÄ£Ê½ÇĞ»»ÃüÁî
-    //uint8_t Status;       //Ö±Ïß×´Ì¬Îª0£¬×ªÍä×´Ì¬Îª1
-    float BlackAngle;       //ºÚÏßÆ«ÒÆ½Ç¶È[-90,90],Ë³Ê±ÕëÕı¡¢ÄæÊ±Õë¸º
-    float CenterShift;      //ÖĞĞÄÆ«ÒÆ¾àÀë[-5000,5000],ÉÏÕı¡¢ÏÂ¸º
+    char ModeChange[15];    //å­˜æ”¾æ¨¡å¼åˆ‡æ¢å‘½ä»¤
+    //uint8_t Status;       //ç›´çº¿çŠ¶æ€ä¸º0ï¼Œè½¬å¼¯çŠ¶æ€ä¸º1
+    float BlackAngle;       //é»‘çº¿åç§»è§’åº¦[-90,90],é¡ºæ—¶é’ˆæ­£ã€é€†æ—¶é’ˆè´Ÿ
+    float CenterShift;      //ä¸­å¿ƒåç§»è·ç¦»[-5000,5000],ä¸Šæ­£ã€ä¸‹è´Ÿ
 }AutoModeInfo;
 
 typedef struct
 {
-    float setDepth;         //Éè¶¨Éî¶È
+    float setDepth;         //è®¾å®šæ·±åº¦
 }DepthControlInfo;
 
 

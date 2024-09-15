@@ -1,37 +1,37 @@
 /****************************************************************************
 
-* SigmaÍÅ¶Ó
+* Sigmaå›¢é˜Ÿ
 
-* ÎÄ¼þÃû: ocd_jy901.c
+* æ–‡ä»¶å: ocd_jy901.c
 
-* ÄÚÈÝ¼òÊö£ºjy901Ä£¿éÎÄ¼þ
+* å†…å®¹ç®€è¿°ï¼šjy901æ¨¡å—æ–‡ä»¶
 
-* ÎÄ¼þÀúÊ·£º
+* æ–‡ä»¶åŽ†å²ï¼š
 
-* °æ±¾ºÅ		ÈÕÆÚ	  ×÷Õß			ËµÃ÷
-*     		2023-07-09  ±«³Ìè´		ÐÞ¸´ÎÞ·¨Éè¶¨Êä³öËÙÂÊµÄÎÊÌâ
+* ç‰ˆæœ¬å·		æ—¥æœŸ	  ä½œè€…			è¯´æ˜Ž
+*     		2023-07-09  é²ç¨‹ç’		ä¿®å¤æ— æ³•è®¾å®šè¾“å‡ºé€ŸçŽ‡çš„é—®é¢˜
 
-*  2.6 		2023-07-03  ±«³Ìè´		É¾³ýIT³õÊ¼»¯º¯Êý£¬Ôö¼Ó°²×°·½ÏòºÍ½âËãËã·¨µÄ½Ó¿Ú
-                                    Ôö¼Ó²ÎÊýÆ¥Åäº¯Êý£¬¼õÉÙ½á¹¹Ìå³¤¶È£¬¾«¼ò´úÂë
+*  2.6 		2023-07-03  é²ç¨‹ç’		åˆ é™¤ITåˆå§‹åŒ–å‡½æ•°ï¼Œå¢žåŠ å®‰è£…æ–¹å‘å’Œè§£ç®—ç®—æ³•çš„æŽ¥å£
+                                    å¢žåŠ å‚æ•°åŒ¹é…å‡½æ•°ï¼Œå‡å°‘ç»“æž„ä½“é•¿åº¦ï¼Œç²¾ç®€ä»£ç 
 
-*  2.5 		2023-05-17  ±«³Ìè´		Êý¾Ý´¦Àíº¯ÊýÔö¼Ó·µ»ØÖµ
+*  2.5 		2023-05-17  é²ç¨‹ç’		æ•°æ®å¤„ç†å‡½æ•°å¢žåŠ è¿”å›žå€¼
 
-* 2.2.1		2023-04-03  ±«³Ìè´		¸úËædrv_hal_uart½øÐÐÐÞ¸Ä
+* 2.2.1		2023-04-03  é²ç¨‹ç’		è·Ÿéšdrv_hal_uartè¿›è¡Œä¿®æ”¹
 
-* 1.1.8		2022-10-22	±«³Ìè´		¶Ô½á¹¹Ìå½øÐÐÁËÕûºÏ£¬Ìá¹©ITÄ£Ê½ºÍDMAÄ£Ê½
-									Ìá¹©jy901Êý¾ÝµÄ´¦Àí¡¢×ª»»¡¢´òÓ¡º¯Êý
+* 1.1.8		2022-10-22	é²ç¨‹ç’		å¯¹ç»“æž„ä½“è¿›è¡Œäº†æ•´åˆï¼Œæä¾›ITæ¨¡å¼å’ŒDMAæ¨¡å¼
+									æä¾›jy901æ•°æ®çš„å¤„ç†ã€è½¬æ¢ã€æ‰“å°å‡½æ•°
 
-* 1.0.0a 	2020-03-14	Àî»·Óî		´´½¨¸ÃÎÄ¼þ
+* 1.0.0a 	2020-03-14	æŽçŽ¯å®‡		åˆ›å»ºè¯¥æ–‡ä»¶
 
-* 1.1.0a 	2020-03-29	Àî»·Óî		ÐÞ¸Ä²¿·ÖÎÄ±¾
+* 1.1.0a 	2020-03-29	æŽçŽ¯å®‡		ä¿®æ”¹éƒ¨åˆ†æ–‡æœ¬
 
 ****************************************************************************/
 #include "ocd_jy901.h"
 
 const uint8_t ucpUnlockCmd[] = {0xff, 0xaa, 0x69, 0x88, 0xb5}; 
 /**
- * @brief JY901·¢ËÍ½âËøÖ¸Áîº¯Êý
- * @param _tJY901-JY901¾ä±úÖ¸Õë
+ * @brief JY901å‘é€è§£é”æŒ‡ä»¤å‡½æ•°
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
  * @retval Null
 */
 static void S_JY901_UnLock(tagJY901_T *_tJY901)
@@ -40,7 +40,7 @@ static void S_JY901_UnLock(tagJY901_T *_tJY901)
 }
 
 /**
- * @brief JY901ÑÓÊ±º¯Êý
+ * @brief JY901å»¶æ—¶å‡½æ•°
  * @param Null
  * @retval Null
 */
@@ -50,9 +50,9 @@ static void S_JY901_Delay(void)
 }
 
 /**
- * @brief JY901±£´æÅäÖÃº¯Êý
- * @param _tJY901-JY901¾ä±úÖ¸Õë
- * @param _ucSet-SAVE_NOW ±£´æµ±Ç°;SAVE_RESET ÖØÐÂÆô¶¯;SAVE_DEFAULT »Ö¸´³ö³§ÉèÖÃ;
+ * @brief JY901ä¿å­˜é…ç½®å‡½æ•°
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
+ * @param _ucSet-SAVE_NOW ä¿å­˜å½“å‰;SAVE_RESET é‡æ–°å¯åŠ¨;SAVE_DEFAULT æ¢å¤å‡ºåŽ‚è®¾ç½®;
  * @retval Null
 */
 static void S_JY901_SaveConfig(tagJY901_T *_tJY901, uint8_t _ucSet)
@@ -80,9 +80,9 @@ static void S_JY901_SaveConfig(tagJY901_T *_tJY901, uint8_t _ucSet)
 }
 
 /**
- * @brief JY901ÉèÖÃº¯Êý
- * @param _tJY901-JY901¾ä±úÖ¸Õë
- * @param _ucpWrite-ÒªÐ´ÈëµÄÊý×é
+ * @brief JY901è®¾ç½®å‡½æ•°
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
+ * @param _ucpWrite-è¦å†™å…¥çš„æ•°ç»„
  * @retval Null
 */
 static void S_JY901_Setting(tagJY901_T *_tJY901, uint8_t *_ucpWrite)
@@ -97,14 +97,14 @@ static void S_JY901_Setting(tagJY901_T *_tJY901, uint8_t *_ucpWrite)
 }
 
 /**
- * @brief JY901²ÎÊýÆ¥Åäº¯Êý
- * @param _tJY901-JY901¾ä±úÖ¸Õë
- * @note ¸ù¾ÝJY901Ä£¿éÖ¸¶¨µÄ²¨ÌØÂÊÆ¥Åä´®¿ÚµÄ²¨ÌØÂÊ
+ * @brief JY901å‚æ•°åŒ¹é…å‡½æ•°
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
+ * @note æ ¹æ®JY901æ¨¡å—æŒ‡å®šçš„æ³¢ç‰¹çŽ‡åŒ¹é…ä¸²å£çš„æ³¢ç‰¹çŽ‡
  * @retval Null
 */
 static void S_JY901_ParamMatch(tagJY901_T *_tJY901)
 {
-	/* ¸ù¾ÝJY901µÄ²¨ÌØÂÊÅäÖÃÑ¡Ôñ´®¿ÚµÄ²¨ÌØÂÊ */
+	/* æ ¹æ®JY901çš„æ³¢ç‰¹çŽ‡é…ç½®é€‰æ‹©ä¸²å£çš„æ³¢ç‰¹çŽ‡ */
     switch(_tJY901->tConfig.ucBaud)
     {
         case JY901_RXBAUD_2400:
@@ -139,17 +139,17 @@ static void S_JY901_ParamMatch(tagJY901_T *_tJY901)
             break;           
     }
     
-    /* IM°åÄ¬ÈÏJY901Á¬½Ó´®¿Ú2 */
+    /* IMæ¿é»˜è®¤JY901è¿žæŽ¥ä¸²å£2 */
     DEFAULT(_tJY901->tUART.tUARTHandle.Instance,USART2);
     
-    /* Ä¬ÈÏÊ¹ÓÃDMA½ÓÊÕ */
+    /* é»˜è®¤ä½¿ç”¨DMAæŽ¥æ”¶ */
     if(_tJY901->tUART.tUARTHandle.Instance != UART5)
         DEFAULT(_tJY901->tUART.tUartDMA.bRxEnable,true);
 }
 
 /**
- * @brief JY901»Ø´«ÄÚÈÝÅäÖÃ
- * @param _tJY901-JY901¾ä±úÖ¸Õë
+ * @brief JY901å›žä¼ å†…å®¹é…ç½®
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
  * @retval Null
 */
 void OCD_JY901_RxTypeConfig(tagJY901_T *_tJY901)
@@ -163,9 +163,9 @@ void OCD_JY901_RxTypeConfig(tagJY901_T *_tJY901)
 }
 
 /**
- * @brief JY901Ð£×¼º¯Êý
- * @param _tJY901-JY901¾ä±úÖ¸Õë
- * @param _ucMode-Ð£×¼Ä£Ê½		
+ * @brief JY901æ ¡å‡†å‡½æ•°
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
+ * @param _ucMode-æ ¡å‡†æ¨¡å¼		
  * @retval Null
 */
 void OCD_JY901_Correct(tagJY901_T *_tJY901, uint8_t _ucMode)
@@ -179,8 +179,8 @@ void OCD_JY901_Correct(tagJY901_T *_tJY901, uint8_t _ucMode)
 
 const uint8_t ucpSleepCmd[] = {0xff, 0xaa, 0x22, 0x01, 0x00}; 
 /**
- * @brief JY901ÐÝÃßº¯Êý£¨ÐÝÃßºóÔÙ´Îµ÷ÓÃÎª½â³ýÐÝÃß£©
- * @param _tJY901-JY901¾ä±úÖ¸Õë
+ * @brief JY901ä¼‘çœ å‡½æ•°ï¼ˆä¼‘çœ åŽå†æ¬¡è°ƒç”¨ä¸ºè§£é™¤ä¼‘çœ ï¼‰
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
  * @retval Null
 */
 void OCD_JY901_Sleep(tagJY901_T *_tJY901)
@@ -189,8 +189,8 @@ void OCD_JY901_Sleep(tagJY901_T *_tJY901)
 }
 
 /**
- * @brief JY901»Ø´«ËÙÂÊÅäÖÃ
- * @param _tJY901-JY901¾ä±úÖ¸Õë
+ * @brief JY901å›žä¼ é€ŸçŽ‡é…ç½®
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
  * @retval Null
 */
 void OCD_JY901_RxSpeedConfig(tagJY901_T *_tJY901)
@@ -203,8 +203,8 @@ void OCD_JY901_RxSpeedConfig(tagJY901_T *_tJY901)
 }
 
 /**
- * @brief JY901»Ø´«²¨ÌØÂÊÅäÖÃ
- * @param _tJY901-JY901¾ä±úÖ¸Õë
+ * @brief JY901å›žä¼ æ³¢ç‰¹çŽ‡é…ç½®
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
  * @retval Null
 */
 void OCD_JY901_RxBaudConfig(tagJY901_T *_tJY901)
@@ -217,8 +217,8 @@ void OCD_JY901_RxBaudConfig(tagJY901_T *_tJY901)
 }
 
 /**
- * @brief JY901°²×°·½ÏòÅäÖÃ
- * @param _tJY901-JY901¾ä±úÖ¸Õë
+ * @brief JY901å®‰è£…æ–¹å‘é…ç½®
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
  * @retval Null
 */
 void OCD_JY901_OrientConfig(tagJY901_T *_tJY901)
@@ -231,8 +231,8 @@ void OCD_JY901_OrientConfig(tagJY901_T *_tJY901)
 }
 
 /**
- * @brief JY901Ëã·¨ÅäÖÃ
- * @param _tJY901-JY901¾ä±úÖ¸Õë
+ * @brief JY901ç®—æ³•é…ç½®
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
  * @retval Null
 */
 void OCD_JY901_AxisConfig(tagJY901_T *_tJY901)
@@ -245,9 +245,9 @@ void OCD_JY901_AxisConfig(tagJY901_T *_tJY901)
 }
 
 /**
- * @brief JY901ÍÓÂÝÒÇ×Ô¶¯Ð£×¼º¯Êý
- * @param _tJY901-JY901¾ä±úÖ¸Õë
- * @param _ucMode-1-½ûÓÃ×Ô¶¯Ð£×¼;0-ÆôÓÃ×Ô¶¯Ð£×¼
+ * @brief JY901é™€èžºä»ªè‡ªåŠ¨æ ¡å‡†å‡½æ•°
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
+ * @param _ucMode-1-ç¦ç”¨è‡ªåŠ¨æ ¡å‡†;0-å¯ç”¨è‡ªåŠ¨æ ¡å‡†
  * @retval Null
 */
 void OCD_JY901_GyroAutoCorrect(tagJY901_T *_tJY901, uint8_t _ucMode)
@@ -261,8 +261,8 @@ void OCD_JY901_GyroAutoCorrect(tagJY901_T *_tJY901, uint8_t _ucMode)
 
 const uint8_t ucpOutputOnceCmd[] = {0xff, 0xaa, 0x03, 0x0c, 0x00}; 
 /**
- * @brief JY901µ¥´ÎÊä³ö£¨ÐèÉèÖÃ»Ø´«ËÙÂÊÎªµ¥´ÎÊä³ö£©
- * @param _tJY901-JY901¾ä±úÖ¸Õë
+ * @brief JY901å•æ¬¡è¾“å‡ºï¼ˆéœ€è®¾ç½®å›žä¼ é€ŸçŽ‡ä¸ºå•æ¬¡è¾“å‡ºï¼‰
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
  * @retval Null
 */
 void OCD_JY901_OutputOnce(tagJY901_T *_tJY901)
@@ -271,8 +271,8 @@ void OCD_JY901_OutputOnce(tagJY901_T *_tJY901)
 }
 
 /**
- * @brief JY901DMA³õÊ¼»¯º¯Êý
- * @param _tJY901-JY901¾ä±úÖ¸Õë
+ * @brief JY901DMAåˆå§‹åŒ–å‡½æ•°
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
  * @retval Null
 */
 void OCD_JY901_DMAInit(tagJY901_T *_tJY901)
@@ -281,39 +281,39 @@ void OCD_JY901_DMAInit(tagJY901_T *_tJY901)
     
 	Drv_Uart_DMAInit(&_tJY901->tUART);
 
-	OCD_JY901_RxBaudConfig(_tJY901);		/* ²¨ÌØÂÊÉèÖÃ */
-	OCD_JY901_RxSpeedConfig(_tJY901);		/* ËÙÂÊÉèÖÃ */
-	OCD_JY901_RxTypeConfig(_tJY901);		/* Êä³öÀàÐÍÉèÖÃ */
-	OCD_JY901_OrientConfig(_tJY901);		/* °²×°·½ÏòÉèÖÃ */
-	OCD_JY901_AxisConfig(_tJY901);			/* ½âËãËã·¨ÉèÖÃ */
-	OCD_JY901_GyroAutoCorrect(_tJY901,0);	/* Ê¹ÓÃÍÓÂÝÒÇ×Ô¶¯Ð£×¼ */
+	OCD_JY901_RxBaudConfig(_tJY901);		/* æ³¢ç‰¹çŽ‡è®¾ç½® */
+	OCD_JY901_RxSpeedConfig(_tJY901);		/* é€ŸçŽ‡è®¾ç½® */
+	OCD_JY901_RxTypeConfig(_tJY901);		/* è¾“å‡ºç±»åž‹è®¾ç½® */
+	OCD_JY901_OrientConfig(_tJY901);		/* å®‰è£…æ–¹å‘è®¾ç½® */
+	OCD_JY901_AxisConfig(_tJY901);			/* è§£ç®—ç®—æ³•è®¾ç½® */
+	OCD_JY901_GyroAutoCorrect(_tJY901,0);	/* ä½¿ç”¨é™€èžºä»ªè‡ªåŠ¨æ ¡å‡† */
 }
 
 /**
- * @brief JY901Êý¾Ý´¦Àíº¯Êý,°´ÕÕÊý¾ÝÀàÐÍ·ÅÈëÏà¶ÔÓ¦µÄ½á¹¹Ìå³ÉÔ±ÖÐ
- * @param _tJY901-JY901¾ä±úÖ¸Õë
-* @retval uint8_t 1:´¦Àí³É¹¦ 0:Î´ÊÕµ½Êý¾Ý
+ * @brief JY901æ•°æ®å¤„ç†å‡½æ•°,æŒ‰ç…§æ•°æ®ç±»åž‹æ”¾å…¥ç›¸å¯¹åº”çš„ç»“æž„ä½“æˆå‘˜ä¸­
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
+* @retval uint8_t 1:å¤„ç†æˆåŠŸ 0:æœªæ”¶åˆ°æ•°æ®
 */
 uint8_t OCD_JY901_DataProcess(tagJY901_T *_tJY901)
 {
-    /* ÅÐ¶Ï±êÖ¾Î» */
+    /* åˆ¤æ–­æ ‡å¿—ä½ */
 	if(_tJY901->tUART.tRxInfo.ucDMARxCplt)
 	{
-		/* ±éÀúÊý×é */
+		/* éåŽ†æ•°ç»„ */
 		for(int i = 0; i < _tJY901->tUART.tRxInfo.usDMARxLength; i++)
 		{
-			if(_tJY901->tUART.tRxInfo.ucpDMARxCache[i] == JY901_HEAD) /* Èç¹ûÊý¾ÝÍ·Îª0x55 */
+			if(_tJY901->tUART.tRxInfo.ucpDMARxCache[i] == JY901_HEAD) /* å¦‚æžœæ•°æ®å¤´ä¸º0x55 */
 			{
-				/* ºÍÐ£Ñé */
+				/* å’Œæ ¡éªŒ */
 				uint8_t ucSum = 0;
 				for(int j = 0;j<10;j++)
 				{
 					ucSum += _tJY901->tUART.tRxInfo.ucpDMARxCache[i+j];
 				}
-				/* ºÍÐ£Ñé³É¹¦£¬ÎªÐèÒªµÄÊý¾Ý×é */
+				/* å’Œæ ¡éªŒæˆåŠŸï¼Œä¸ºéœ€è¦çš„æ•°æ®ç»„ */
 				if(ucSum == _tJY901->tUART.tRxInfo.ucpDMARxCache[i+10])
 				{
-					/* ¸ù¾Ýtype¿½±´µ½¶ÔÓ¦µÄ½á¹¹ÌåÖÐ */
+					/* æ ¹æ®typeæ‹·è´åˆ°å¯¹åº”çš„ç»“æž„ä½“ä¸­ */
 					switch(_tJY901->tUART.tRxInfo.ucpDMARxCache[i+1])
 					{
 						case JY901_TIME:	memcpy(&_tJY901->stcTime,&_tJY901->tUART.tRxInfo.ucpDMARxCache[i+2],8);
@@ -335,48 +335,48 @@ uint8_t OCD_JY901_DataProcess(tagJY901_T *_tJY901)
 				else continue;
 			}
 		}
-		_tJY901->tUART.tRxInfo.ucDMARxCplt = 0;	/* ±êÖ¾Î»ÇåÁã */
+		_tJY901->tUART.tRxInfo.ucDMARxCplt = 0;	/* æ ‡å¿—ä½æ¸…é›¶ */
         return 1;
 	}
     return 0;
 }
 
 /**
- * @brief JY901Êý¾Ý×ª»»º¯Êý,°´ÕÕÊý¾Ý×ª»»Îª¿É¶Á,´æ´¢ÖÁ¶ÔÓ¦Con³ÉÔ±ÖÐ
- * @param _tJY901-JY901¾ä±úÖ¸Õë
+ * @brief JY901æ•°æ®è½¬æ¢å‡½æ•°,æŒ‰ç…§æ•°æ®è½¬æ¢ä¸ºå¯è¯»,å­˜å‚¨è‡³å¯¹åº”Conæˆå‘˜ä¸­
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
  * @retval Null
 */
 void OCD_JY901_DataConversion(tagJY901_T *_tJY901)
 {
-	/* ¶ÁÈ¡¼ÓËÙ¶È */
+	/* è¯»å–åŠ é€Ÿåº¦ */
 	if(_tJY901->tConfig.usType & JY901_OUTPUT_ACCEL)
 	{
 		_tJY901->stcAcc.ConAccX = (float)_tJY901->stcAcc.AccX /32768*16;
 		_tJY901->stcAcc.ConAccY = (float)_tJY901->stcAcc.AccY /32768*16;
 		_tJY901->stcAcc.ConAccZ = (float)_tJY901->stcAcc.AccZ /32768*16;
 	}
-	/* ¶ÁÈ¡ÍÓÂÝÒÇ */
+	/* è¯»å–é™€èžºä»ª */
 	if(_tJY901->tConfig.usType & JY901_OUTPUT_GYRO)
 	{
 		_tJY901->stcGyro.ConGyroX = (float)_tJY901->stcGyro.GyroX/32768*2000;
 		_tJY901->stcGyro.ConGyroY = (float)_tJY901->stcGyro.GyroY/32768*2000;
 		_tJY901->stcGyro.ConGyroZ = (float)_tJY901->stcGyro.GyroZ/32768*2000;
 	}
-	/* ¶ÁÈ¡Å·À­½Ç */
+	/* è¯»å–æ¬§æ‹‰è§’ */
 	if (_tJY901->tConfig.usType & JY901_OUTPUT_ANGLE)
 	{
 		_tJY901->stcAngle.ConRoll  = (float)_tJY901->stcAngle.Roll/32768*180;
 		_tJY901->stcAngle.ConPitch = (float)_tJY901->stcAngle.Pitch/32768*180;
 		_tJY901->stcAngle.ConYaw   = (float)_tJY901->stcAngle.Yaw/32768*180;
 	}
-	/* ¶ÁÈ¡´Å³¡ */
+	/* è¯»å–ç£åœº */
 	if (_tJY901->tConfig.usType & JY901_OUTPUT_MAG)
 	{
 		_tJY901->stcMag.ConMagX = (float)_tJY901->stcMag.MagX;
 		_tJY901->stcMag.ConMagY = (float)_tJY901->stcMag.MagY;
 		_tJY901->stcMag.ConMagZ = (float)_tJY901->stcMag.MagZ;
 	}
-	/* ¶ÁÈ¡ËÄÔªÊý */
+	/* è¯»å–å››å…ƒæ•° */
 	if(_tJY901->tConfig.usType & JY901_OUTPUT_QUATER)
 	{
 		_tJY901->stcQuater.Conq0 = (float)_tJY901->stcQuater.q0/32768;
@@ -387,22 +387,22 @@ void OCD_JY901_DataConversion(tagJY901_T *_tJY901)
 }
 
 /**
- * @brief JY901Ïò´®¿Ú´òÓ¡´¦ÀíÍê³ÉµÄÊý¾Ý£¬Ê¹ÓÃprintf»òÕßrt_printf
- * @param _tJY901-JY901¾ä±úÖ¸Õë
+ * @brief JY901å‘ä¸²å£æ‰“å°å¤„ç†å®Œæˆçš„æ•°æ®ï¼Œä½¿ç”¨printfæˆ–è€…rt_printf
+ * @param _tJY901-JY901å¥æŸ„æŒ‡é’ˆ
  * @retval Null
 */
 void OCD_JY901_Printf(tagJY901_T *_tJY901)
 {
-	/* ´òÓ¡Ê±¼ä */
-	if(_tJY901->tConfig.usType & JY901_OUTPUT_TIME)		printf("time: %dÄê%dÔÂ%dÈÕ%dÊ±%d·Ö%dÃë\r\n",_tJY901->stcTime.Year,_tJY901->stcTime.Month,_tJY901->stcTime.Day,_tJY901->stcTime.Hour,_tJY901->stcTime.Min,_tJY901->stcTime.Sec);
-	/* ´òÓ¡¼ÓËÙ¶È */
+	/* æ‰“å°æ—¶é—´ */
+	if(_tJY901->tConfig.usType & JY901_OUTPUT_TIME)		//printf("time: %då¹´%dæœˆ%dæ—¥%dæ—¶%dåˆ†%dç§’\r\n",_tJY901->stcTime.Year,_tJY901->stcTime.Month,_tJY901->stcTime.Day,_tJY901->stcTime.Hour,_tJY901->stcTime.Min,_tJY901->stcTime.Sec);
+	/* æ‰“å°åŠ é€Ÿåº¦ */
 	if(_tJY901->tConfig.usType & JY901_OUTPUT_ACCEL)	printf("Acc:  %.3f %.3f %.3f\r\n",_tJY901->stcAcc.ConAccX,_tJY901->stcAcc.ConAccY,_tJY901->stcAcc.ConAccZ);
-	/* ´òÓ¡½ÇËÙ¶È */
+	/* æ‰“å°è§’é€Ÿåº¦ */
 	if(_tJY901->tConfig.usType & JY901_OUTPUT_GYRO)		printf("Gyro: %.3f %.3f %.3f\r\n",_tJY901->stcGyro.ConGyroX,_tJY901->stcGyro.ConGyroY,_tJY901->stcGyro.ConGyroZ);
-	/* ´òÓ¡Å·À­½Ç */
+	/* æ‰“å°æ¬§æ‹‰è§’ */
 	if(_tJY901->tConfig.usType & JY901_OUTPUT_ANGLE)	printf("Angle:%.3f %.3f %.3f\r\n",_tJY901->stcAngle.ConRoll,_tJY901->stcAngle.ConPitch,_tJY901->stcAngle.ConYaw);
-	/* ´òÓ¡´Å³¡ */
+	/* æ‰“å°ç£åœº */
 	if(_tJY901->tConfig.usType & JY901_OUTPUT_MAG)		printf("Mag:  %.3f %.3f %.3f\r\n",_tJY901->stcMag.ConMagX,_tJY901->stcMag.ConMagY,_tJY901->stcMag.ConMagZ);
-	/* ´òÓ¡ËÄÔªÊý */
+	/* æ‰“å°å››å…ƒæ•° */
 	if(_tJY901->tConfig.usType & JY901_OUTPUT_QUATER)	printf("Quater:  %.3f %.3f %.3f %.3f\r\n",_tJY901->stcQuater.Conq0,_tJY901->stcQuater.Conq1,_tJY901->stcQuater.Conq2,_tJY901->stcQuater.Conq3);
 }

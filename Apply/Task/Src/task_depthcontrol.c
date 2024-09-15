@@ -4,19 +4,19 @@
 
 extern PWMInfo_T PWMInfo;
 
-/* Éî¶È¿ØÖÆº¯Êı£¬ĞèÒªµ±Ç°Éî¶ÈºÍÆÚÍûÉî¶È */
+/* æ·±åº¦æ§åˆ¶å‡½æ•°ï¼Œéœ€è¦å½“å‰æ·±åº¦å’ŒæœŸæœ›æ·±åº¦ */
 void task_DepthControl_Process(float Curr,float Exp)
 {
-    float PIDOut = 0.0;         //PID¼ÆËãºóµÄ½á¹û
+    float PIDOut = 0.0;         //PIDè®¡ç®—åçš„ç»“æœ
 
     PIDOut = Algo_PID_Calculate(&DepthPID,Curr,Exp);
 
     //printf("%f",PIDOut);
 
-    //Êµ²â´óÓÚ1500msÎªÉÏ¸¡
+    //å®æµ‹å¤§äº1500msä¸ºä¸Šæµ®
     PWMInfo.PWMout[LeftVThruster] = -PIDOut + STOP_PWM_VALUE;
 
-    //ÏŞ·ù
+    //é™å¹…
     if(PWMInfo.PWMout[LeftVThruster] < 1350)  PWMInfo.PWMout[LeftVThruster] = 1350;
     if(PWMInfo.PWMout[LeftVThruster] > 1650)  PWMInfo.PWMout[LeftVThruster] = 1650;
 

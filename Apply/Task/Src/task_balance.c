@@ -3,21 +3,23 @@
 #include "config.h"
 
 extern PWMInfo_T PWMInfo;
-/* Ê¹µÃ×óÓÒ»úÒí±£³ÖÆ½ºâ */
+/* ä½¿å¾—å·¦å³æœºç¿¼ä¿æŒå¹³è¡¡ */
 void Task_Balance_Process(void)
 {
-    float CurrTiltAngle = JY901S.stcAngle.ConPitch;
+    /*float CurrTiltAngle = JY901S.stcAngle.ConPitch;
     float ExpTiltAngle = 0.0f;
     float PIDout;
 
     PIDout = Algo_PID_Calculate(&BalancePID,CurrTiltAngle,ExpTiltAngle);
     //printf("%f\r\n",PIDout);
 
-    //×óÒíÏÂ³ÁÊ±£¬CurrTiltAngle´óÓÚ0£»ÓÒ²àÏà·´¡£´¹Ö±ÍÆ½øÆ÷´óÓÚ1500Ê±£¬ÉÏ¸¡
-    PWMInfo.PWMout[LeftVThruster] = -PIDout + STOP_PWM_VALUE;
-    PWMInfo.PWMout[RightVThruster] = PIDout + STOP_PWM_VALUE;
+    //å·¦ç¿¼ä¸‹æ²‰æ—¶ï¼ŒCurrTiltAngleå¤§äº0ï¼›å³ä¾§ç›¸åã€‚å‚ç›´æ¨è¿›å™¨å¤§äº1500æ—¶ï¼Œä¸Šæµ®
+    PWMInfo.PWMout[v_wheel1_speed] = -PIDout + STOP_PWM_VALUE;
+    PWMInfo.PWMout[v_wheel3_speed] = -PIDout + STOP_PWM_VALUE;
+    PWMInfo.PWMout[v_wheel2_spee5d] = PIDout + STOP_PWM_VALUE;
+    PWMInfo.PWMout[v_wheel2_speed] = PIDout + STOP_PWM_VALUE;
 
-    //PWMÏŞ·ù£¬0.6A
+    //PWMé™å¹…ï¼Œ0.6A
     if(PWMInfo.PWMout[LeftVThruster] < 1350)  PWMInfo.PWMout[LeftVThruster] = 1350;
     if(PWMInfo.PWMout[LeftVThruster] > 1650)  PWMInfo.PWMout[LeftVThruster] = 1650;
 
@@ -25,7 +27,7 @@ void Task_Balance_Process(void)
     if(PWMInfo.PWMout[RightVThruster] > 1650)  PWMInfo.PWMout[RightVThruster] = 1650;
 
     Task_Thruster_SpeedSet(LeftVThruster,PWMInfo.PWMout[LeftVThruster]);
-    Task_Thruster_SpeedSet(RightVThruster,PWMInfo.PWMout[RightVThruster]);
+    Task_Thruster_SpeedSet(RightVThruster,PWMInfo.PWMout[RightVThruster]);*/
 
     //printf("%d %d\r\n",PWMInfo.PWMout[LeftVThruster],PWMInfo.PWMout[RightVThruster]);
 }

@@ -2,34 +2,37 @@
 #include "ocd_conf.h"
 #include "config.h"
 
-/* ÍâÉè³õÊ¼»¯º¯Êı */
+/* å¤–è®¾åˆå§‹åŒ–å‡½æ•° */
 void Task_UserInit(void)
 {   
-    //³õÊ¼»¯´®¿Ú1ºÍ´®¿Ú3
+    //åˆå§‹åŒ–ä¸²å£1å’Œä¸²å£3
     Drv_Uart_DMAInit(&Uart1);
     Drv_Uart_DMAInit(&Uart3);
 
-    //³õÊ¼»¯PID
+    //åˆå§‹åŒ–PID
     Algo_PID_Init(&DepthPID);
     Algo_PID_Init(&YawPID);
     Algo_PID_Init(&AngleLoopPID);
     Algo_PID_Init(&PositionLoopPID);
-    Algo_PID_Init(&BalancePID);
+    Algo_PID_Init(&RollPID);
 
-    //³õÊ¼»¯JY901S
+    //åˆå§‹åŒ–JY901S
     OCD_JY901_DMAInit(&JY901S);
     //printf("JY901S INIT!\r\n");
 
-    //³õÊ¼»¯MS5837
-    // if(!OCD_MS5837_Init(&MS5837))
-    //     printf("MS5837 ERROR\r\n");
+    //å§¿æ€åˆå§‹åŒ–
+    // Expect_angle_Init();
+
+    //åˆå§‹åŒ–MS5837
+     if(!OCD_MS5837_Init(&MS5837))
+         printf("MS5837 ERROR\r\n");
 
     OCD_MS5837_Init(&MS5837);
 
-    //³õÊ¼»¯PWM
-    Drv_PWM_Init(PWM,8);
+    //åˆå§‹åŒ–PWM
+    Drv_PWM_Init(PWM,12);
     //printf("PWM INIT!\r\n");
 
-    //ÍÆ½øÆ÷ÉÏµç³õÊ¼»¯
+    //æ¨è¿›å™¨ä¸Šç”µåˆå§‹åŒ–
     Task_Thruster_Init();
 }

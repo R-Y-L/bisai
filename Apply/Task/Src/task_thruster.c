@@ -4,27 +4,31 @@
 
 extern PWMInfo_T PWMInfo;
 /**
- * @brief µç»ú³õÊ¼»¯
+ * @brief ç”µæœºåˆå§‹åŒ–
  * @param null
  * @retval null
 */
 void Task_Thruster_Init(void)
 {
-	Drv_Delay_Ms(6000);		/* ³õÊ¼Í£×ªÐÅºÅºóµÈ´ýÎÈ¶¨ */
+	Drv_Delay_Ms(6000);		/* åˆå§‹åœè½¬ä¿¡å·åŽç­‰å¾…ç¨³å®š */
 	
-	/* Í£×ª£¬1500ms(7.5%Õ¼¿Õ±È) */
+	/* åœè½¬ï¼Œ1500ms(7.5%å ç©ºæ¯”) */
 	Drv_PWM_HighLvTimeSet(&PWM[0], STOP_PWM_VALUE);
 	Drv_PWM_HighLvTimeSet(&PWM[1], STOP_PWM_VALUE);
 	Drv_PWM_HighLvTimeSet(&PWM[2], STOP_PWM_VALUE);
 	Drv_PWM_HighLvTimeSet(&PWM[3], STOP_PWM_VALUE);
+	Drv_PWM_HighLvTimeSet(&PWM[4], STOP_PWM_VALUE);
+	Drv_PWM_HighLvTimeSet(&PWM[5], STOP_PWM_VALUE);
+	Drv_PWM_HighLvTimeSet(&PWM[6], STOP_PWM_VALUE);
+	Drv_PWM_HighLvTimeSet(&PWM[7], STOP_PWM_VALUE);
 	Drv_Delay_Ms(2000);
 }
 
 /**
- * @brief µç»ú×ªËÙÉèÖÃ×Óº¯Êý
- * @param index Ñ¡Ôñ¼¸ºÅÍÆ½øÆ÷
- * @param _Htime ¸ßµçÆ½Ê±¼ä	_Htime¿ÉÉèÖÃÎª500-2500,1500Í£Ö¹
-							500-1500 ÄæÊ±ÕëÐý×ª 1500-2500Ë³Ê±ÕëÐý×ª
+ * @brief ç”µæœºè½¬é€Ÿè®¾ç½®å­å‡½æ•°
+ * @param index é€‰æ‹©å‡ å·æŽ¨è¿›å™¨
+ * @param _Htime é«˜ç”µå¹³æ—¶é—´	_Htimeå¯è®¾ç½®ä¸º500-2500,1500åœæ­¢
+							500-1500 é€†æ—¶é’ˆæ—‹è½¬ 1500-2500é¡ºæ—¶é’ˆæ—‹è½¬
  * @retval null
 */
 void Task_Thruster_SpeedSet(int index,uint16_t _Htime)
@@ -33,9 +37,9 @@ void Task_Thruster_SpeedSet(int index,uint16_t _Htime)
 }
 
 /**
- * @brief ËùÓÐµç»úÏàÍ¬×ªËÙÉèÖÃº¯Êý
- * @param _Htime ¸ßµçÆ½Ê±¼ä	_Htime¿ÉÉèÖÃÎª500-2500,1500Í£Ö¹
-							500-1500 ÄæÊ±ÕëÐý×ª 1500-2500Ë³Ê±ÕëÐý×ª
+ * @brief æ‰€æœ‰ç”µæœºç›¸åŒè½¬é€Ÿè®¾ç½®å‡½æ•°
+ * @param _Htime é«˜ç”µå¹³æ—¶é—´	_Htimeå¯è®¾ç½®ä¸º500-2500,1500åœæ­¢
+							500-1500 é€†æ—¶é’ˆæ—‹è½¬ 1500-2500é¡ºæ—¶é’ˆæ—‹è½¬
  * @retval null
 */
 void Task_Thruster_AllSpeedSet(uint16_t _HTime)
@@ -47,44 +51,48 @@ void Task_Thruster_AllSpeedSet(uint16_t _HTime)
 }	
 
 /**
- * @brief µç»ú¿ªÊ¼¹¤×÷
- * @param index Ñ¡Ôñ¼¸ºÅÍÆ½øÆ÷
- * @param _Htime ¸ßµçÆ½Ê±¼ä
+ * @brief ç”µæœºå¼€å§‹å·¥ä½œ
+ * @param index é€‰æ‹©å‡ å·æŽ¨è¿›å™¨
+ * @param _Htime é«˜ç”µå¹³æ—¶é—´
  * @retval null
 */
 void Task_Thruster_Start(int index,uint16_t _HTime)
 {
-	/* µç»úÔËÐÐËÙ¶ÈÉèÖÃ */
+	/* ç”µæœºè¿è¡Œé€Ÿåº¦è®¾ç½® */
 	Task_Thruster_SpeedSet(index,_HTime);
 }
 
 /**
- * @brief ËùÓÐµç»ú¿ªÊ¼¹¤×÷
- * @param *adress ´æ·ÅËÄ¸öÍÆ½øÆ÷µÄ·ÖÁ¿Êý×éµÄÊ×µØÖ·
+ * @brief æ‰€æœ‰æŽ¨è¿›å™¨å¼€å§‹å·¥ä½œ
+ * @param *adress å­˜æ”¾å…«ä¸ªæŽ¨è¿›å™¨çš„åˆ†é‡æ•°ç»„çš„é¦–åœ°å€
  * @retval null
 */
-void Task_Thruster_AllStart(float *adress)
+void Task_Thruster_AllStart(uint16_t *adress)
 {
-	Task_Thruster_Start(0,*adress+STOP_PWM_VALUE);
-	Task_Thruster_Start(1,*(adress+1)+STOP_PWM_VALUE);
-	Task_Thruster_Start(2,*(adress+2)+STOP_PWM_VALUE);
-	Task_Thruster_Start(3,*(adress+3)+STOP_PWM_VALUE);
+	Task_Thruster_Start(0,*adress);
+	Task_Thruster_Start(1,*(adress+1));
+	Task_Thruster_Start(2,*(adress+2));
+	Task_Thruster_Start(3,*(adress+3));
+	Task_Thruster_Start(4,*(adress+4));
+	Task_Thruster_Start(5,*(adress+5));
+	Task_Thruster_Start(6,*(adress+6));
+	Task_Thruster_Start(7,*(adress+7));
 }
 
 /**
- * @brief µç»úÍ£Ö¹¹¤×÷
- * @param index Ñ¡Ôñ¼¸ºÅÍÆ½øÆ÷
+ * @brief ç”µæœºåœæ­¢å·¥ä½œ
+ * @param index é€‰æ‹©å‡ å·æŽ¨è¿›å™¨
  * @retval null
 */
 void Task_Thruster_Stop(int index)
 {
-	/* µç»úÔËÐÐËÙ¶ÈÉèÖÃ */
+	/* ç”µæœºè¿è¡Œé€Ÿåº¦è®¾ç½® */
 	Drv_PWM_HighLvTimeSet(&PWM[index], STOP_PWM_VALUE);
 	PWMInfo.PWMout[index] = STOP_PWM_VALUE;
 }
 
 /**
- * @brief ËùÓÐµç»úÍ£Ö¹¹¤×÷
+ * @brief æ‰€æœ‰ç”µæœºåœæ­¢å·¥ä½œ
  * @param null
  * @retval null
 */
@@ -94,5 +102,53 @@ void Task_Thruster_AllStop(void)
 	Task_Thruster_Stop(1);
 	Task_Thruster_Stop(2);
 	Task_Thruster_Stop(3);
+	Task_Thruster_Stop(4);
+	Task_Thruster_Stop(5);
+	Task_Thruster_Stop(6);
+	Task_Thruster_Stop(7);
+}
+
+/**
+ * @brief è§’åº¦åˆ°é«˜ç”µå¹³æ—¶é—´ï¼Œç»™èˆµæœºå‡½æ•°ä½¿ç”¨
+ * @param angle è§’åº¦å‚æ•°
+ * @retval high_time é«˜ç”µå¹³æ—¶é—´
+*/
+uint16_t Servo_Angle_To_HightTime(uint16_t angle)
+{
+	uint16_t _HTime;
+	//æ±‚å‡ºèˆµæœºè§’åº¦å¯¹åº”çš„å¸¦å®½ï¼Œæ¯9åº¦å¤š50å¸¦å®½ï¼Œ360å°±æ˜¯å¤š2000å¸¦å®½
+	_HTime = angle*50/9 + 500;
+	//é™å¹…
+	if(_HTime>2500) _HTime = 2500;
+	if(_HTime<500) _HTime = 500;
+	//è¿”å›žé«˜ç”µå¹³æ—¶é—´
+	return _HTime;
+}
+
+/**
+ * @brief æ‰€æœ‰èˆµæœºå’Œç¯å…‰å¼€å§‹å·¥ä½œ
+ * @param *adress å­˜æ”¾å…«ä¸ªæŽ¨è¿›å™¨å’Œä¸‰ä¸ªèˆµæœºå’Œä¸¤ä¸ªç¯çš„åˆ†é‡æ•°ç»„çš„é¦–åœ°å€
+ * @retval null
+*/
+void Task_Servo_AllStart(uint16_t *adress)
+{
+	Task_Thruster_Start(8,*(adress+8));
+	Task_Thruster_Start(9,*(adress+9));
+	Task_Thruster_Start(10,*(adress+10));
+	Task_Thruster_Start(11,*(adress+11));
+	//Task_Thruster_Start(12,*(adress+12));
+}
+
+/**
+ * @brief æ‰€æœ‰èˆµæœºå›žåˆ°åˆå§‹è§’åº¦
+ *   @param null
+ * @retval null
+*/
+void Task_Servo_AllStop(void)
+{
+	//èˆµæœºåº”æœ‰çš„å¹³è¡¡è§’åº¦
+	Drv_PWM_HighLvTimeSet(&PWM[8], Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE));
+	Drv_PWM_HighLvTimeSet(&PWM[9], Servo_Angle_To_HightTime(CLAW_ELBOW_STOP_ANGLE));
+	Drv_PWM_HighLvTimeSet(&PWM[10], Servo_Angle_To_HightTime(CLAW_CATCH_STOP_ANGLE));
 }
 

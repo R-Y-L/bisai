@@ -1,17 +1,17 @@
-#include "usercode.h"		/* usercodeÍ·ÎÄ¼þ */
-#include "threadpool.h"		/* threadpoolÍ·ÎÄ¼þ */
-#include "drv_hal_conf.h"   /* SGA¿âÍ·ÎÄ¼þÅäÖÃ */
-#include "task_conf.h"      /* task²ãÍ·ÎÄ¼þÅäÖÃ */
-#include "ocd_conf.h"       /* OCD²ãÍ·ÎÄ¼þÅäÖÃ */
-#include "dev_conf.h"		/* Dev²ãÍ·ÎÄ¼þÅäÖÃ */
-#include "algo_conf.h"		/* Algo²ãÍ·ÎÄ¼þÅäÖÃ */
-#include "config.h"			/* I/OÅäÖÃÍ·ÎÄ¼þÅäÖÃ */
+#include "usercode.h"		/* usercodeå¤´æ–‡ä»¶ */
+#include "threadpool.h"		/* threadpoolå¤´æ–‡ä»¶ */
+#include "drv_hal_conf.h"   /* SGAåº“å¤´æ–‡ä»¶é…ç½® */
+#include "task_conf.h"      /* taskå±‚å¤´æ–‡ä»¶é…ç½® */
+#include "ocd_conf.h"       /* OCDå±‚å¤´æ–‡ä»¶é…ç½® */
+#include "dev_conf.h"		/* Devå±‚å¤´æ–‡ä»¶é…ç½® */
+#include "algo_conf.h"		/* Algoå±‚å¤´æ–‡ä»¶é…ç½® */
+#include "config.h"			/* I/Oé…ç½®å¤´æ–‡ä»¶é…ç½® */
 
-//´æ´¢ËùÓÐÍÆ½øÆ÷µÄÊý¾Ý
-PWMInfo_T PWMInfo = {1500,1500,1500,1500};
+//å­˜å‚¨8ä¸ªæŽ¨è¿›å™¨çš„æ•°æ®å’Œ3ä¸ªèˆµæœºå’ŒæŽ¢ç…§ç¯çš„æ•°æ®
+PWMInfo_T PWMInfo = {1500,1500,1500,1500,1500,1500,1500,1500,1500,1500,1500,1100};
 
-/* Ïß³ÌÈë¿Úº¯Êý£¨Ê¹ÓÃÂã»úºöÂÔ´ËÎÄ¼þ£© */
-/* ¶ÁÈ¡ÉÏÎ»»úÊý¾ÝÏß³Ì */
+/* ç»¾è·¨â–¼éãƒ¥å½›é‘èŠ¥æšŸé”›å œå¨‡é¢ã„¨ï¼˜éˆå“„æ‹·é£ãƒ¯æ‹·?é”ŸèŠ¥æžƒæµ è®¹ç´š */
+/* è¯»å–ä¸Šä½æœºæ•°æ®çº¿ç¨‹ */
 void DataFromIPC(void* paramenter)
 {
     uint8_t ReceBuf[100];
@@ -21,67 +21,90 @@ void DataFromIPC(void* paramenter)
     {
         if(rt_sem_take(DataFromIPC_Sem,RT_WAITING_FOREVER) == RT_EOK)
         {
-            //Æ½Ê±µ÷ÊÔÊ¹ÓÃ´®¿Ú1£¬ÕýÊ½Ê¹ÓÃ²ÉÓÃ´®¿Ú3,ÐÞ¸ÄPRINTF_UARTºê¼´¿É
-            if(PRINTF_UART == USART1)
-                ReceNum = Drv_Uart_Receive_DMA(&Uart1,ReceBuf);
-            else if(PRINTF_UART == USART3)
+            //å¹³æ—¶è°ƒè¯•ä½¿ç”¨ä¸²å£3ï¼Œæ­£å¼ä½¿ç”¨é‡‡ç”¨ä¸²å£1,ä¿®æ”¹PRINTF_UARTå®å³å¯
+            if(PRINTF_UART == USART3)
                 ReceNum = Drv_Uart_Receive_DMA(&Uart3,ReceBuf);
+            else if(PRINTF_UART == USART1)
+                ReceNum = Drv_Uart_Receive_DMA(&Uart1,ReceBuf);
             
             if(ReceNum != 0)
+            
             {
                 //printf("%s\r\n",ReceBuf);
-                //·ÖÎöÊý¾Ý
+                //åˆ†æžæ•°æ®
                 Task_AnalysisData(ReceBuf);
 
-                //½«ÁÙÊ±±äÁ¿Çå0
+                //å°†ä¸´æ—¶å˜é‡æ¸…0
                 rt_memset(ReceBuf,0,ReceNum);
                 ReceNum = 0;
             }
         }
-        Drv_Delay_Ms(1);    //ÈÃ³öCPU×ÊÔ´¸øµÍÓÅÏÈ¼¶Ïß³Ì
+        Drv_Delay_Ms(1);    //è®©å‡ºCPUèµ„æºç»™ä½Žä¼˜å…ˆçº§çº¿ç¨‹
     }
 }
 
-/* ¶ÁÈ¡JY901SÊý¾ÝÏß³Ì */
+/* è¯»å–JY901Sæ•°æ®çº¿ç¨‹ */
 void JY901SReadThread(void* paramenter)
 {
     while(1)
     {
-        //Èç¹û»ñÈ¡µ½ÐÅºÅÁ¿£¬ËµÃ÷½ÓÊÕµ½Êý¾Ý
+        //å¦‚æžœèŽ·å–åˆ°ä¿¡å·é‡ï¼Œè¯´æ˜ŽæŽ¥æ”¶åˆ°æ•°æ®
 		if(rt_sem_take(JY901S_Sem,RT_WAITING_FOREVER) == RT_EOK)
 		{
-            //Èç¹û³É¹¦´¦ÀíÍê³ÉÊý¾Ý
+            //å¦‚æžœæˆåŠŸå¤„ç†å®Œæˆæ•°æ®
 			if(OCD_JY901_DataProcess(&JY901S))
             {
-                //Êý¾Ý×ª»»
+                //æ•°æ®è½¬æ¢
                 OCD_JY901_DataConversion(&JY901S);
-                //´òÓ¡Å·À­½Ç
-                if(JY901S.tConfig.usType & JY901_OUTPUT_ANGLE)	    
-                    printf("J Angle %.3f %.3f %.3f\r\n",
+                //æ‰“å°è§’é€Ÿåº¦å’ŒåŠ é€Ÿåº¦
+                OCD_JY901_Printf(&JY901S);
+				//æ‰“å°æ¨ªæ»šè§’å’Œä¿¯ä»°è§’
+				/*if(JY901S.tConfig.usType & JY901_OUTPUT_ANGLE)	    
+                    printf("J Angle %.3f %.3f\r\n",
                             JY901S.stcAngle.ConRoll,
-                            JY901S.stcAngle.ConPitch,
-                            JY901S.stcAngle.ConYaw);
+                            JY901S.stcAngle.ConPitch);
+                //æ‰“å°è‰„å‘è§’
+                printf("concon_YAW %.3f\r\n",concon_YAW);
+				printf("\r\n");*/
+                circle_conduct();
             }
 		}
-        Drv_Delay_Ms(1);    //ÈÃ³öCPU×ÊÔ´¸øµÍÓÅÏÈ¼¶Ïß³Ì
+        Drv_Delay_Ms(1);    //ç’â•åš­CPUç’§å‹¬ç°®ç¼æ¬Žç¶†æµ¼æ¨ºåŽ›ç»¾Ñ…åšŽé”Ÿï¿½?
 		rt_thread_yield();
     }
 }
+//è§’åº¦ä¸´ç•Œå¤„ç†å‡½æ•°
+void circle_conduct(void) 
+{
+	static float previous_angle = 0;          // å­˜å‚¨å‰ä¸€ä¸ªè§’åº¦å€¼ï¼Œç”¨äºŽæ£€æµ‹è·³è½¬
+    // æ£€æµ‹è·³è½¬ï¼šä»Ž180åˆ°-180
+    if (previous_angle > 150 && JY901S.stcAngle.ConYaw < -150) {
+        concon_YAW += 360; // å®Œæˆä¸€åœˆå¢žåŠ 
+    }
+    // æ£€æµ‹è·³è½¬ï¼šä»Ž-180åˆ°180
+    else if (previous_angle < -150 && JY901S.stcAngle.ConYaw > 150) {
+        concon_YAW -= 360; // å®Œæˆä¸€åœˆå‡å°‘
+    }
 
-/* ¶ÁÈ¡MS5837Êý¾ÝÏß³Ì */
+    concon_YAW += (JY901S.stcAngle.ConYaw - previous_angle);  // æ›´æ–°æ€»è§’åº¦å˜åŒ–
+    previous_angle = JY901S.stcAngle.ConYaw; // æ›´æ–°å‰ä¸€ä¸ªè§’åº¦ä¸ºå½“å‰è§’åº¦
+
+}
+
+/* è¯»å–MS5837æ•°æ®çº¿ç¨‹â–¼ */
 void MS5837ReadThread(void* paramenter)
 {
     while(1)
     {
         OCD_MS5837_GetData(&MS5837);
-        if(MS5837.fDepth == 153150.250000)  //Î´½ÓMS5837µÄ´íÎóÊý¾Ý
+        if(MS5837.fDepth == 153150.250000)  //æœªæŽ¥MS5837çš„é”™è¯¯æ•°æ®
             MS5837.fDepth = 0;
-        printf("M %0.2f\r\n",MS5837.fDepth);
+        //printf("M %0.2f\r\n",MS5837.fDepth);
         Drv_Delay_Ms(600);
     }
 }
 
-/* ÊÖ±ú¿ØÖÆÏß³Ì */
+/* æ‰‹æŸ„æŽ§åˆ¶çº¿ç¨‹ */
 void HANDLE_MODE(void* paramenter)
 {
     HandleModeInfo HMInfo;
@@ -91,90 +114,95 @@ void HANDLE_MODE(void* paramenter)
     // rt_schedule();
     while(1)
     {
-        //ÊÖ±ú¿ØÖÆÏûÏ¢¶ÓÁÐ½ÓÊÕµ½Êý¾Ý£¬½«ÇÐ»»µ½×Ô¶¯Ä£Ê½
         if(rt_mq_recv(HandleModemq,&HMInfo,sizeof(HandleModeInfo),RT_WAITING_NO) == RT_EOK)
         {
+            //éŽµå¬«ç„ºéŽºÑƒåŸ—å¨‘å Ÿä¼…é—ƒç†·åžªéŽºãƒ¦æ•¹é’ç‰ˆæšŸé”Ÿï¿½?é”›å±½çš¢é’å›¨å´²é’æ‹Œåšœé”ã„¦Äé”Ÿï¿½?
             if(!rt_strcmp(HMInfo.ModeChange,"AUTO START"))
             {
-                //½«AutoModemqÏûÏ¢¶ÓÁÐÖÐËùÓÐÄÚÈÝÇå¿Õ
+                //çå’¥utoModemqå¨‘å Ÿä¼…é—ƒç†·åžªé”Ÿï¿½?éŽµâ‚¬éˆå¤Šå”´ç€¹è§„ç«»é”Ÿï¿½?
                 while(1)
                 {
                     if(rt_mq_recv(AutoModemq,&ClearBuf,sizeof(AutoModeInfo),RT_WAITING_NO) != RT_EOK)
                         break;
                 }
-                Task_Thruster_AllStop();                //ËùÓÐÍÆ½øÆ÷Í£×ª
+                Task_Thruster_AllStop();                //éŽµâ‚¬éˆå¤‹å¸¹æ©æ¶˜æ«’é‹æ»†æµ†
                 
                 printf("Switch to AUTO Mode\r\n");
-                rt_enter_critical();                    //µ÷¶ÈÆ÷ÉÏËø
-                rt_thread_suspend(rt_thread_self());    //¹ÒÆð±¾Ïß³Ì
-                rt_thread_resume(thread5);              //»Ö¸´×Ô¶¯¿ØÖÆÏß³Ì
-                rt_exit_critical();                     //µ÷¶ÈÆ÷½âËø
-                rt_schedule();                          //Á¢¼´Ö´ÐÐÒ»´Îµ÷¶È
+                rt_enter_critical();                    //ç’‹å†¨å®³é£ã„¤ç¬‚é”Ÿï¿½?
+                rt_thread_suspend(rt_thread_self());    //éŽ¸å‚æ£é”Ÿï¿½?ç»¾è·¨â–¼
+                rt_thread_resume(thread5);              //éŽ­ï¿½é”Ÿï¿½?é”Ÿå€Ÿåšœé”ã„¦å¸¶é’å‰åšŽé”Ÿï¿½?
+                rt_exit_critical();                     //ç’‹å†¨å®³é£ã„¨Ð’é”Ÿï¿½?
+                rt_schedule();                          //ç»”å¬ªåµ†éŽµÑæ‹·?é”Ÿæˆ’ç«´å¨†Â¤çšŸé”Ÿï¿½?
             }
             else
             {
-                Task_HandleMode_Process(HMInfo);    //ÊÖ±ú¿ØÖÆÄ£Ê½´¦Àíº¯Êý
-                Drv_Delay_Ms(500);  //Ö´ÐÐÊ±¼äÓëÉÏÎ»»úÊÖ±ú·¢ËÍÒ»Ö¡Êý¾ÝÊ±¼äÏàÍ¬
-                Task_Thruster_Stop(LeftHThruster);
-                Task_Thruster_Stop(RightHThruster);
+                Task_HandleMode_Process(HMInfo);    //éŽµå¬«ç„ºéŽºÑƒåŸ—å¦¯â€³ç´¡æ¾¶å‹­æ‚Šé‘èŠ¥æšŸ
+                Drv_Delay_Ms(500);  //éŽµÑæ‹·?é”ŸèŠ¥æ¤‚é—‚ç¿ ç¬Œæ¶“å©ç¶…éˆçƒ˜å¢œéŒå‹«å½‚é–«ä½·ç«´ç”¯Ñ„æšŸé”Ÿï¿½?éƒå •æ£¿é©ç¨¿æ‚“
             }
         }
         // printf("HANDLE\r\n");
 
-        Drv_Delay_Ms(1);    //ÈÃ³öCPU×ÊÔ´¸øµÍÓÅÏÈ¼¶Ïß³Ì
+        Drv_Delay_Ms(1);    //ç’â•åš­CPUç’§å‹¬ç°®ç¼æ¬Žç¶†æµ¼æ¨ºåŽ›ç»¾Ñ…åšŽé”Ÿï¿½?
     }
 }
 
-/* Ñ²ÏßÄ£Ê½Ïß³Ì */
+/* è¿åŠ¨æŽ§åˆ¶ä¸»çº¿ç¨‹ */
+void MotionControl(void* paramenter)
+{
+    while(1)
+    {
+		Task_Motion_Process();
+        Drv_Delay_Ms(100);
+    }
+}
+
+
+/* å®¸ï¼„åšŽå¦¯â€³ç´¡ç»¾è·¨â–¼ */
 void AUTO_MODE(void* paramenter)
 {
     AutoModeInfo AMInfo;
     HandleModeInfo ClearBuf;
 
-    //Ä¬ÈÏ¹ÒÆð×Ô¶¯Ä£Ê½
+    //æ¦›æ©ˆæ‹·?é”ŸèŠ¥å¯•ç’§ç–¯åšœé”ã„¦Äé”Ÿï¿½?
     rt_thread_suspend(rt_thread_self());
     rt_schedule();
     while(1)
     {
-        //×Ô¶¯¿ØÖÆÏûÏ¢¶ÓÁÐ½ÓÊÕµ½Êý¾Ý£¬½«ÇÐ»»µ½ÊÖ±úÄ£Ê½
         if(rt_mq_recv(AutoModemq,&AMInfo,sizeof(AutoModeInfo),RT_WAITING_FOREVER) == RT_EOK)
         {
+            //é”Ÿï¿½?é”ã„¦å¸¶é’èˆµç§·é”Ÿï¿½?é—ƒç†·åžªéŽºãƒ¦æ•¹é’ç‰ˆæšŸé”Ÿï¿½?é”›å±½çš¢é’å›¨å´²é’ç‰ˆå¢œéŒå‹¬Äé”Ÿï¿½?
             if(!rt_strcmp(AMInfo.ModeChange,"HANDLE START"))
             {
-                //½«HandleModemq¶ÓÁÐÖÐËùÓÐÄÚÈÝÇå¿Õ
+                //çå’¹andleModemqé—ƒç†·åžªé”Ÿï¿½?éŽµâ‚¬éˆå¤Šå”´ç€¹è§„ç«»é”Ÿï¿½?
                 while(1)
                 {
                     if(rt_mq_recv(HandleModemq,&ClearBuf,sizeof(HandleModeInfo),RT_WAITING_NO) != RT_EOK)
                         break;
                 }
-                Task_Thruster_AllStop();                //ËùÓÐÍÆ½øÆ÷Í£×ª
+                Task_Thruster_AllStop();                //éŽµâ‚¬éˆå¤‹å¸¹æ©æ¶˜æ«’é‹æ»†æµ†
 
                 printf("Switch to HANDLE Mode\r\n");
-                rt_enter_critical();                    //µ÷¶ÈÆ÷ÉÏËø
-                rt_thread_suspend(rt_thread_self());    //¹ÒÆð±¾Ïß³Ì
-                rt_thread_resume(thread4);              //»Ö¸´ÊÖ¶¯¿ØÖÆÏß³Ì
-                rt_exit_critical();                     //µ÷¶ÈÆ÷½âËø
-                rt_schedule();                          //Á¢¼´Ö´ÐÐÒ»´Îµ÷¶È
+                rt_enter_critical();                    //ç’‹å†¨å®³é£ã„¤ç¬‚é”Ÿï¿½?
+                rt_thread_suspend(rt_thread_self());    //éŽ¸å‚æ£é”Ÿï¿½?ç»¾è·¨â–¼
+                rt_thread_resume(thread4);              //éŽ­ï¿½é”Ÿï¿½?é”ŸèŠ¥å¢œé”ã„¦å¸¶é’å‰åšŽé”Ÿï¿½?
+                rt_exit_critical();                     //ç’‹å†¨å®³é£ã„¨Ð’é”Ÿï¿½?
+                rt_schedule();                          //ç»”å¬ªåµ†éŽµÑæ‹·?é”Ÿæˆ’ç«´å¨†Â¤çšŸé”Ÿï¿½?
             }
             else
             {
-                //×Ô¶¯Ä£Ê½´¦Àíº¯Êý£¬¸ù¾ÝÏûÏ¢¶ÓÁÐÖÐ´«À´µÄºÚÏß½Ç¶È¸Ä±äÍÆ½øÆ÷PWM
+                //é”Ÿï¿½?é”ã„¦Äå¯®å¿¥æ‹·?é”Ÿç•Œæ‚Šé‘èŠ¥æšŸé”›å±¾ç‰´é”Ÿï¿½?å¨‘å Ÿä¼…é—ƒç†·åžªé”Ÿï¿½?æµ¼çŠ³æ½µé¨å‹¯ç²¦ç»¾åŒ¡æ‹·?é”Ÿè—‰å®³é€ç‘°å½‰éŽºã„¨ç¹˜é£â‰’WM
                 Task_AutoMode_Process(AMInfo);
-                //printf("%f\r\n",AMInfo.BlackAngle);
-                // Drv_Delay_Ms(200);
-                // Task_Thruster_Stop(LeftHThruster);
-                // Task_Thruster_Stop(RightHThruster);
             }
         }
 
         // printf("AUTO\r\n");
         // Drv_Delay_Ms(1000);
-        Drv_Delay_Ms(1);    //ÈÃ³öCPU×ÊÔ´¸øµÍÓÅÏÈ¼¶Ïß³Ì
+        Drv_Delay_Ms(1);    //ç’â•åš­CPUç’§å‹¬ç°®ç¼æ¬Žç¶†æµ¼æ¨ºåŽ›ç»¾Ñ…åšŽé”Ÿï¿½?
     }
 }
 
-/* ¶¨Éî¿ØÖÆ */
-void DepthControl(void* paramenter)
+/* æ·±åº¦æŽ§åˆ¶ */
+/*void DepthControl(void* paramenter)
 {
     DepthControlInfo DCInfo;
     float ExpDepth = 0.0f;
@@ -182,52 +210,210 @@ void DepthControl(void* paramenter)
 
     while(1)
     {
-        //¶¨ÉîÊý¾ÝÏûÏ¢¶ÓÁÐ½ÓÊÕµ½Êý¾Ý£¬½«¿ªÊ¼¶¨Éî¿ØÖÆ
+        //ç€¹æ°­ç¹éç‰ˆåµå¨‘å Ÿä¼…é—ƒç†·åžªéŽºãƒ¦æ•¹é’ç‰ˆæšŸé”Ÿï¿½?é”›å±½çš¢å¯®â‚¬æ¿®å¬ªç•¾å¨£è¾¨å¸¶é”Ÿï¿½?
         if(rt_mq_recv(DepthControlmq,&DCInfo,sizeof(DepthControlInfo),RT_WAITING_NO) == RT_EOK)
         {
             ExpDepth = DCInfo.setDepth;
             //printf("%f",ExpDepth);
         }
 
-        //»ñÈ¡µ±Ç°Éî¶È
+        //é‘¾å³°å½‡è¤°æ’³å¢ å¨£åžå®³
         CurrDepth = MS5837.fDepth;
-        //¶¨Éî¿ØÖÆº¯Êý
+        //ç€¹æ°­ç¹éŽºÑƒåŸ—é‘èŠ¥æšŸ
         task_DepthControl_Process(CurrDepth,ExpDepth);
 
-        Drv_Delay_Ms(600);    //Ã¿¸ôÒ»¶ÎÊ±¼ä½øÐÐÒ»´Î¶¨Éî
+        Drv_Delay_Ms(600);    //å§£å¿›æ®§æ¶“â‚¬å¨ˆåž«æ¤‚é—‚ç£‹ç¹˜ç›å±¼ç«´å¨†â€³ç•¾é”Ÿï¿½?
+    }
+}*/
+
+
+/*ä¿¯ä»°ã€æœºæ¢°çˆªåŠæŽ¢ç…§ç¯*/
+void PlusControl(void* paramenter)
+{
+	PWMInfo.PWMout[claw_shouder_Speed] = Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE);
+	PWMInfo.PWMout[claw_elbow_Speed] = Servo_Angle_To_HightTime(CLAW_ELBOW_STOP_ANGLE);
+    //PWMInfo.PWMout[claw_elbow_Speed] = Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE);
+	PWMInfo.PWMout[claw_catchSpeed] = Servo_Angle_To_HightTime(CLAW_CATCH_STOP_ANGLE);
+    PWMInfo.PWMout[light_level_1] = 1200;
+	Mode_control |= 0x80; //Mode_controlç¬¬å…«ä½ä¸ºæœªåˆå§‹åŒ–æ ‡å¿—ä½
+ //   State_control |= 0x10;
+    while(1)                                                                    
+    {		
+		//Mode_controlç¬¬ä¸€ä½ä¸ºyawè‡ªé€‚åº”çš„æŽ§åˆ¶ä½ï¼Œç½®1ä¸ºå¼€å¯PIDæŽ§åˆ¶ï¼Œ0ä¸ºå…³é—­
+		//Yawçš„PIDæŽ§åˆ¶çš„åˆå§‹åŒ–
+		// if((Mode_control & 0x80) && (Mode_control & 0x01))
+		// {
+		// 	//Exp_AngleInfo.Yaw = JY901S.stcAngle.ConYaw;
+		// 	concon_YAW = JY901S.stcAngle.ConYaw;
+		// 	Mode_control &=~0x80;
+		// }
+		// else if((!(Mode_control & 0x80)) && (!(Mode_control & 0x01)))
+		// {
+		// 	Mode_control |=0x80;
+		// }
+
+		// if((State_control & 0x10) && (State_control & 0x01))
+		// {
+		// 	State_control &=~0x10;
+		// }
+		// else if((!(State_control & 0x10)) && (!(State_control & 0x01)))
+		// {
+		// 	State_control |=0x10;
+		// }
+        
+        // //å³æ‘‡æ†å·¦å³æŽ§åˆ¶è½¬å‘
+		// if(right_rocker==3)
+		// 	{ 
+		// 		Exp_AngleInfo.Yaw -= 0.5;
+		// 	}
+		// else if(right_rocker==4)
+		// 	{ 
+		// 		Exp_AngleInfo.Yaw += 0.5;
+		// 	}
+		//åå­—é”®å·¦å³æŽ§åˆ¶ä¿¯ä»°
+		if(x_y_z_pitch & 0x01)
+			{ 
+				Exp_AngleInfo.Pitch += 0.5;
+				if(Exp_AngleInfo.Pitch > 150)
+					Exp_AngleInfo.Pitch = 150;
+			}
+		else if(x_y_z_pitch & 0x02)
+			{ 
+				Exp_AngleInfo.Pitch -= 0.5;
+				if(Exp_AngleInfo.Pitch < -150)
+					Exp_AngleInfo.Pitch = -150;
+			}
+
+		//å·¦æ‘‡æ†ä¸Šä¸‹æŽ§åˆ¶å¤§è‡‚
+		if(left_rocker == 0){ ;}//é”Ÿï¿½?
+		
+		else if(left_rocker == 1)
+		{
+			PWMInfo.PWMout[claw_shouder_Speed] += CLAW_STEP+5;
+			if(PWMInfo.PWMout[claw_shouder_Speed] > Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE+90)) 
+            PWMInfo.PWMout[claw_shouder_Speed] = Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE+90);
+			if(PWMInfo.PWMout[claw_shouder_Speed] > 2500) 
+            PWMInfo.PWMout[claw_shouder_Speed] = 2500;
+			if(PWMInfo.PWMout[claw_shouder_Speed] < 500) 
+            PWMInfo.PWMout[claw_shouder_Speed] = 500;
+		}
+		else if(left_rocker == 2)
+		{
+			PWMInfo.PWMout[claw_shouder_Speed] -= CLAW_STEP+5;
+			if(PWMInfo.PWMout[claw_shouder_Speed] < Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE-80)) 
+            PWMInfo.PWMout[claw_shouder_Speed] = Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE-80);
+			if(PWMInfo.PWMout[claw_shouder_Speed] > 2500) 
+            PWMInfo.PWMout[claw_shouder_Speed] = 2500;
+			if(PWMInfo.PWMout[claw_shouder_Speed] < 500) 
+            PWMInfo.PWMout[claw_shouder_Speed] = 500;
+		}
+        //å³æ‘‡æ†ä¸Šä¸‹æŽ§åˆ¶å°è‡‚
+        if(right_rocker == 0){ ;}
+		else if(right_rocker == 1)
+		{
+			PWMInfo.PWMout[claw_elbow_Speed] += CLAW_STEP+5;
+            if(PWMInfo.PWMout[claw_elbow_Speed] > Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE-40)) 
+            PWMInfo.PWMout[claw_elbow_Speed] = Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE-40);
+			if(PWMInfo.PWMout[claw_elbow_Speed] > 2500) 
+            PWMInfo.PWMout[claw_elbow_Speed] = 2500;
+			if(PWMInfo.PWMout[claw_elbow_Speed] < 500) 
+            PWMInfo.PWMout[claw_elbow_Speed] = 500;
+		}
+		else if(right_rocker == 2)
+		{
+			PWMInfo.PWMout[claw_elbow_Speed] -= CLAW_STEP+5;
+			if(PWMInfo.PWMout[claw_elbow_Speed] > 2500) 
+            PWMInfo.PWMout[claw_elbow_Speed] = 2500;
+			if(PWMInfo.PWMout[claw_elbow_Speed] < 500) 
+            PWMInfo.PWMout[claw_elbow_Speed] = 500;
+		}    
+    
+		
+		//RBå’ŒLBæŽ§åˆ¶å¤¹å’Œæ¾
+		if(Mode_control & 0x02)
+		{
+			PWMInfo.PWMout[claw_catchSpeed] -= CLAW_STEP+5;
+			if(PWMInfo.PWMout[claw_catchSpeed] > 2500) 
+            PWMInfo.PWMout[claw_catchSpeed] = 2500;
+			if(PWMInfo.PWMout[claw_catchSpeed] < 1395) 
+            PWMInfo.PWMout[claw_catchSpeed] = 1395;
+		}
+		else if(Mode_control & 0x04)
+		{
+			PWMInfo.PWMout[claw_catchSpeed] += CLAW_STEP+5;
+			if(PWMInfo.PWMout[claw_catchSpeed] > 1700) 
+            PWMInfo.PWMout[claw_catchSpeed] = 1700;
+			if(PWMInfo.PWMout[claw_catchSpeed] < 500) 
+            PWMInfo.PWMout[claw_catchSpeed] = 500;
+		}
+		else{ ;}
+
+        //å·¦å³æ‘‡æ†æŒ‰é”®åˆ†åˆ«å¯¹åº”åœ¨å¤–å¤¹å–ç‰©å“çŠ¶æ€ä¸Žå›žæ¡†æ”¾ç½®ç‰©å“çŠ¶æ€
+        if(State_control & 0x01)
+        {
+            if(PWMInfo.PWMout[claw_catchSpeed] > 1435)
+                PWMInfo.PWMout[claw_catchSpeed] = 1435;
+            PWMInfo.PWMout[claw_shouder_Speed] = Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE+90);
+            PWMInfo.PWMout[claw_elbow_Speed] = Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE-40);
+        }
+        else if(State_control & 0x02)
+        {
+            PWMInfo.PWMout[claw_catchSpeed] = 1435;
+            PWMInfo.PWMout[claw_shouder_Speed] = Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE-40);
+            PWMInfo.PWMout[claw_elbow_Speed] = Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE-40);
+        }
+		//ç¯å…‰äº®æš—æŽ§åˆ¶
+        if(right_rocker == 3)
+        {
+            PWMInfo.PWMout[light_level_1] += 200;
+            if(PWMInfo.PWMout[light_level_1] > 1900) 
+            PWMInfo.PWMout[light_level_1] = 1900;
+            right_rocker == 0;
+        }
+        else if(right_rocker == 4)
+        {
+            PWMInfo.PWMout[light_level_1] -= 200;
+            if(PWMInfo.PWMout[light_level_1] < 1100) 
+            PWMInfo.PWMout[light_level_1] = 1100;
+            right_rocker == 0;
+        }
+        //è°ƒè¯•ç”¨
+        //printf("Y %d %d %d\r\n",PWMInfo.PWMout[claw_shouder_Speed],PWMInfo.PWMout[claw_elbow_Speed],PWMInfo.PWMout[claw_catchSpeed]);
+		//printf("L %d\r\n",PWMInfo.PWMout[light_level_1]);
+        //å†™å…¥æœºæ¢°è‡‚åŠç¯å…‰pwmå€¼
+        Task_Servo_AllStart(PWMInfo.PWMout);
+		//å»¶æ—¶
+		Drv_Delay_Ms(50);
     }
 }
 
-/* »ã±¨PWMoutÖµ */
+/* æ±‡æŠ¥PWMoutå€¼ */
 void ReportPWMout(void* paramenter)
 {
     while(1)
     {
-        printf("T %d %d %d %d\r\n",
-                    PWMInfo.PWMout[LeftHThruster],
-                    PWMInfo.PWMout[RightHThruster],
-                    PWMInfo.PWMout[LeftVThruster],
-                    PWMInfo.PWMout[RightVThruster]);
-        Drv_Delay_Ms(500);    //Ã¿¸ôÒ»¶ÎÊ±¼ä½øÐÐÒ»´Î»ã±¨
+          /*printf("h: %d %d %d %d\r\n",
+			PWMInfo.PWMout[h_wheel1_speed],
+			PWMInfo.PWMout[h_wheel2_speed],
+			PWMInfo.PWMout[h_wheel3_speed],
+			PWMInfo.PWMout[h_wheel4_speed] );
+			
+			printf("v: %d %d %d %d\r\n \r\n",
+			PWMInfo.PWMout[v_wheel1_speed],
+			PWMInfo.PWMout[v_wheel2_speed],
+			PWMInfo.PWMout[v_wheel3_speed],
+			PWMInfo.PWMout[v_wheel4_speed] );*/
+        Drv_Delay_Ms(500);    
     }
 }
 
-/* ²âÊÔÏß³Ì */
+/* å¨´å¬­ç˜¯ç»¾è·¨â–¼ */
 void TestThread(void* paramenter)
 {
-    while(1)
-    {
-        Task_Balance_Process();
-//				PWMInfo.PWMout[LeftVThruster] = 1455;
-//				PWMInfo.PWMout[RightVThruster] = 1440;
-//				Task_Thruster_SpeedSet(LeftVThruster,PWMInfo.PWMout[LeftVThruster]);
-//				Task_Thruster_SpeedSet(RightVThruster,PWMInfo.PWMout[RightVThruster]);
-        Drv_Delay_Ms(100);
-    }
-    //³¬¹ý1500ÎªÇ°½ø 0ºÅÎª×ó²àË®Æ½ÍÆ½øÆ÷
-    //³¬¹ý1500ÎªÉÏ¸¡ 1ºÅÎª×ó²à´¹Ö±ÍÆ½øÆ÷
-    //³¬¹ý1500ÎªÉÏ¸¡ 2ºÅÎªÓÒ²à´¹Ö±ÍÆ½øÆ÷
-    //³¬¹ý1500ÎªÇ°½ø 3ºÅÎªÓÒ²àË®Æ½ÍÆ½øÆ÷
+		Drv_GPIO_Reset(&demoGPIO[2]);
+		Drv_Delay_Ms(1000);
+		Drv_GPIO_Set(&demoGPIO[2]);
+		Drv_Delay_Ms(1000);
 }
 
 
