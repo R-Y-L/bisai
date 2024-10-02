@@ -4,5 +4,5 @@
 .\objects\slab.o: ..\Bsp\RTOS\RT-Thread\include\rtconfig.h
 .\objects\slab.o: ..\Bsp\RTOS\RT-Thread\include\rtdebug.h
 .\objects\slab.o: ..\Bsp\RTOS\RT-Thread\include\rtdef.h
-.\objects\slab.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\slab.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\slab.o: ..\Bsp\RTOS\RT-Thread\include\rtservice.h

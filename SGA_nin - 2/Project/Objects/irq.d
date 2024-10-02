@@ -4,5 +4,5 @@
 .\objects\irq.o: ..\Bsp\RTOS\RT-Thread\include\rtconfig.h
 .\objects\irq.o: ..\Bsp\RTOS\RT-Thread\include\rtdebug.h
 .\objects\irq.o: ..\Bsp\RTOS\RT-Thread\include\rtdef.h
-.\objects\irq.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\irq.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\irq.o: ..\Bsp\RTOS\RT-Thread\include\rtservice.h

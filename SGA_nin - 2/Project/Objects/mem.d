@@ -4,5 +4,5 @@
 .\objects\mem.o: ..\Bsp\RTOS\RT-Thread\include\rtconfig.h
 .\objects\mem.o: ..\Bsp\RTOS\RT-Thread\include\rtdebug.h
 .\objects\mem.o: ..\Bsp\RTOS\RT-Thread\include\rtdef.h
-.\objects\mem.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\mem.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\mem.o: ..\Bsp\RTOS\RT-Thread\include\rtservice.h

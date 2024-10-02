@@ -5,10 +5,10 @@
 .\objects\ocd_ads1256.o: ..\Bsp\RTOS\RT-Thread\include\rtconfig.h
 .\objects\ocd_ads1256.o: ..\Bsp\RTOS\RT-Thread\include\rtdebug.h
 .\objects\ocd_ads1256.o: ..\Bsp\RTOS\RT-Thread\include\rtdef.h
-.\objects\ocd_ads1256.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\ocd_ads1256.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\ocd_ads1256.o: ..\Bsp\RTOS\RT-Thread\include\rtservice.h
 .\objects\ocd_ads1256.o: ..\Apply\Logic\Inc\threadpool.h
-.\objects\ocd_ads1256.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\ocd_ads1256.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\ocd_ads1256.o: ..\Driver\Inc\drv_hal.h
 .\objects\ocd_ads1256.o: ..\Hardware\STM32F1XX\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h
 .\objects\ocd_ads1256.o: ..\Hardware\STM32F1XX\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx_hal_conf.h
@@ -23,7 +23,7 @@
 .\objects\ocd_ads1256.o: ..\Hardware\STM32F1XX\CMSIS\Device\ST\STM32F1xx\Include\system_stm32f1xx.h
 .\objects\ocd_ads1256.o: ..\Hardware\STM32F1XX\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h
 .\objects\ocd_ads1256.o: ..\Hardware\STM32F1XX\STM32F1xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-.\objects\ocd_ads1256.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\ocd_ads1256.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\ocd_ads1256.o: ..\Hardware\STM32F1XX\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc_ex.h
 .\objects\ocd_ads1256.o: ..\Hardware\STM32F1XX\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_gpio.h
 .\objects\ocd_ads1256.o: ..\Hardware\STM32F1XX\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_gpio_ex.h
@@ -58,8 +58,8 @@
 .\objects\ocd_ads1256.o: ..\Driver\Inc\drv_hal_dac.h
 .\objects\ocd_ads1256.o: ..\Driver\Inc\drv_hal_wdg.h
 .\objects\ocd_ads1256.o: ..\Driver\Inc\drv_hal_pwr.h
-.\objects\ocd_ads1256.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\ocd_ads1256.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\ocd_ads1256.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\ocd_ads1256.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\ocd_ads1256.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\ocd_ads1256.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\ocd_ads1256.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\ocd_ads1256.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\ocd_ads1256.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\ocd_ads1256.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

@@ -4,10 +4,10 @@
 .\objects\drv_hal_adc.o: ..\Bsp\RTOS\RT-Thread\include\rtconfig.h
 .\objects\drv_hal_adc.o: ..\Bsp\RTOS\RT-Thread\include\rtdebug.h
 .\objects\drv_hal_adc.o: ..\Bsp\RTOS\RT-Thread\include\rtdef.h
-.\objects\drv_hal_adc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\drv_hal_adc.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\drv_hal_adc.o: ..\Bsp\RTOS\RT-Thread\include\rtservice.h
 .\objects\drv_hal_adc.o: ..\Apply\Logic\Inc\threadpool.h
-.\objects\drv_hal_adc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\drv_hal_adc.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\drv_hal_adc.o: ..\Driver\Inc\drv_hal.h
 .\objects\drv_hal_adc.o: ..\Hardware\STM32F1XX\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h
 .\objects\drv_hal_adc.o: ..\Hardware\STM32F1XX\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx_hal_conf.h
@@ -22,7 +22,7 @@
 .\objects\drv_hal_adc.o: ..\Hardware\STM32F1XX\CMSIS\Device\ST\STM32F1xx\Include\system_stm32f1xx.h
 .\objects\drv_hal_adc.o: ..\Hardware\STM32F1XX\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h
 .\objects\drv_hal_adc.o: ..\Hardware\STM32F1XX\STM32F1xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-.\objects\drv_hal_adc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\drv_hal_adc.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\drv_hal_adc.o: ..\Hardware\STM32F1XX\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc_ex.h
 .\objects\drv_hal_adc.o: ..\Hardware\STM32F1XX\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_gpio.h
 .\objects\drv_hal_adc.o: ..\Hardware\STM32F1XX\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_gpio_ex.h
@@ -57,8 +57,8 @@
 .\objects\drv_hal_adc.o: ..\Driver\Inc\drv_hal_dac.h
 .\objects\drv_hal_adc.o: ..\Driver\Inc\drv_hal_wdg.h
 .\objects\drv_hal_adc.o: ..\Driver\Inc\drv_hal_pwr.h
-.\objects\drv_hal_adc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\drv_hal_adc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\drv_hal_adc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\drv_hal_adc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\drv_hal_adc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\drv_hal_adc.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\drv_hal_adc.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\drv_hal_adc.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\drv_hal_adc.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\drv_hal_adc.o: D:\lyr\ruanjian\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
