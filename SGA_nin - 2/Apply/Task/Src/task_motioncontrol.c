@@ -55,14 +55,14 @@ void HandleMode_data_handle()
 		}
 	else if(left_rocker==4)
 		{ 
-			YAWspeed = -YAWSPEED;
+			YAWspeed = -YAWSPEED-10;
 		}
  
 
 	//计算推进器�?
 	PWMInfo.PWMout[v_wheel1_speed] =  y_Speed -  x_Speed - YAWspeed + STOP_PWM_VALUE;
     PWMInfo.PWMout[v_wheel2_speed] =  y_Speed +  x_Speed - YAWspeed + STOP_PWM_VALUE;
-	PWMInfo.PWMout[v_wheel3_speed] =  -(y_Speed +  x_Speed + YAWspeed) + STOP_PWM_VALUE;//左后反转，原因不明，暂定推进器原因
+	PWMInfo.PWMout[v_wheel3_speed] =  -(y_Speed +  x_Speed + YAWspeed) + STOP_PWM_VALUE - 5;//左后反转，原因不明，暂定推进器原因
    // PWMInfo.PWMout[v_wheel3_speed] =  -y_Speed -  x_Speed/abs(x_Speed)*(abs(x_Speed)-10) - YAWspeed + STOP_PWM_VALUE;
     PWMInfo.PWMout[v_wheel4_speed] =  y_Speed -  x_Speed + YAWspeed + STOP_PWM_VALUE;
 
@@ -157,7 +157,3 @@ void Expect_angle_Init(void)
 	Exp_AngleInfo .Yaw = JY901S.stcAngle.ConYaw;
 }
 
-//void abs(int k)
-//{
-//	if(k<0) k = -k;
-//}

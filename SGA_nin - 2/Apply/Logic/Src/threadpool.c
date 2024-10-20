@@ -57,16 +57,16 @@ void JY901SReadThread(void* paramenter)
                 //数据转换
                 OCD_JY901_DataConversion(&JY901S);
                 //打印角速度和加速度
-                //OCD_JY901_Printf(&JY901S);
+                OCD_JY901_Printf(&JY901S);
 				//打印横滚角和俯仰角
 				// if(JY901S.tConfig.usType & JY901_OUTPUT_ANGLE)	    
                 //     printf("J Angle %.3f %.3f\r\n",
                 //             JY901S.stcAngle.ConRoll,
                 //             JY901S.stcAngle.ConPitch);
                 //打印艄向角
-                //printf("concon_YAW %.3f\r\n",concon_YAW);
+                // printf("concon_YAW %.3f\r\n",concon_YAW);
 				printf("\r\n");
-                circle_conduct();
+                // circle_conduct();
             }
 		}
         Drv_Delay_Ms(1);    //璁╁嚭CPU璧勬簮缁欎綆浼樺厛绾х嚎锟�?
@@ -99,7 +99,7 @@ void MS5837ReadThread(void* paramenter)
         OCD_MS5837_GetData(&MS5837);
         if(MS5837.fDepth == 153150.250000)  //未接MS5837的错误数据
             MS5837.fDepth = 0;
-        // printf("M %0.2f\r\n",MS5837.fDepth);
+        printf("M %0.2f\r\n",MS5837.fDepth);
         // printf("T %0.2f\r\n",MS5837.fTemperature);
         Drv_Delay_Ms(600);
     }
@@ -286,10 +286,10 @@ void PlusControl(void* paramenter)
 			}
 
 		//左摇杆上下控制大臂
-		if(left_rocker == 0)
-        { 
-            printf("zuo");
-        }//锟�?
+		// if(left_rocker == 0)
+        // { 
+        //     printf("zuo");
+        // }//锟�?
 		
 		else if(left_rocker == 1)
 		{
@@ -318,11 +318,11 @@ void PlusControl(void* paramenter)
         //右摇杆上下控制小臂
         if(right_rocker == 0)
         { 
-            printf("you");
+        //     printf("you");
         }
 		else if(right_rocker == 1)
 		{
-            printf("/naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/n");
+            // printf("/naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/n");
 			PWMInfo.PWMout[claw_elbow_Speed] += CLAW_STEP+5;
             if(PWMInfo.PWMout[claw_elbow_Speed] > Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE+90)) 
             PWMInfo.PWMout[claw_elbow_Speed] = Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE+90);
@@ -405,6 +405,8 @@ void PlusControl(void* paramenter)
             PWMInfo.PWMout[light_level_1] = 1050;
             right_rocker = 0;
         }
+        //摄像头云台
+
         //调试用
         //printf("Y %d %d %d\r\n",PWMInfo.PWMout[claw_shouder_Speed],PWMInfo.PWMout[claw_elbow_Speed],PWMInfo.PWMout[claw_catchSpeed]);
 		//printf("L %d\r\n",PWMInfo.PWMout[light_level_1]);
