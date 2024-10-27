@@ -76,6 +76,7 @@
 .\objects\task_userinit.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\task_userinit.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 .\objects\task_userinit.o: ..\Bsp\OCD\Inc\ocd_ms5837.h
+.\objects\task_userinit.o: ..\Apply\Logic\Inc\usercode.h
 .\objects\task_userinit.o: ..\Apply\Logic\Inc\config.h
 .\objects\task_userinit.o: ..\Bsp\Algo\Inc\algo_conf.h
 .\objects\task_userinit.o: ..\Bsp\Algo\Inc\algo_pid.h

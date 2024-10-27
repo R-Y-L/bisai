@@ -6,13 +6,13 @@ JLink info:
 DLL: V7.96h, compiled May 15 2024 15:33:59
 Firmware: J-Link ARM-OB STM32 compiled Aug 22 2012 19:52:04
 Hardware: V7.00
-S/N : 20090929 
+S/N : 20090928 
 Feature(s) : RDI,FlashDL,FlashBP,JFlash,GDBFull 
 
 * JLink Info: InitTarget() start
 * JLink Info: SWD selected. Executing JTAG -> SWD switching sequence.
 * JLink Info: DAP initialized successfully.
-* JLink Info: InitTarget() end - Took 15.4ms
+* JLink Info: InitTarget() end - Took 16.6ms
 * JLink Info: Found SW-DP with ID 0x1BA01477
 * JLink Info: DPv0 detected
 * JLink Info: CoreSight SoC-400 or earlier
@@ -54,5 +54,5 @@ Erase Done.Programming Done.Verify OK.* JLink Info: Memory map 'before startup c
 * JLink Info: Memory map 'after startup completion point' is active
 Application running ...
 * JLink Info: OnDisconnectTarget() start
-* JLink Info: OnDisconnectTarget() end - Took 602us
-Flash Load finished at 17:48:23
+* JLink Info: OnDisconnectTarget() end - Took 707us
+Flash Load finished at 13:14:39

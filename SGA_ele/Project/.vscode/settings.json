@@ -11,6 +11,8 @@
         "task_sysinit.h": "c",
         "stdint.h": "c",
         "ocd_jy901.h": "c",
-        "task_analysisdata.h": "c"
+        "task_analysisdata.h": "c",
+        "ocd_conf.h": "c",
+        "ocd_ms5837.h": "c"
     }
 }
