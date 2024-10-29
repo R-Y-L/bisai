@@ -65,7 +65,7 @@ void JY901SReadThread(void* paramenter)
                 //             JY901S.stcAngle.ConPitch);
                 //打印艄向角
                 // printf("concon_YAW %.3f\r\n",concon_YAW);
-				printf("\r\n");
+				// printf("\r\n");
                 // circle_conduct();
             }
 		}
@@ -94,6 +94,7 @@ void circle_conduct(void)
 /* 读取MS5837数据线程▼ */
 void MS5837ReadThread(void* paramenter)
 {
+    DepthControlInfo DCInfo;
     while(1)
     {
         OCD_MS5837_GetData(&MS5837);
@@ -101,6 +102,12 @@ void MS5837ReadThread(void* paramenter)
             MS5837.fDepth = 0;
         printf("M %0.2f\r\n",MS5837.fDepth);
         // printf("T %0.2f\r\n",MS5837.fTemperature);
+        if(cnt == 0)
+        {
+            cnt = 1;
+            DCInfo.setDepth = MS5837.fDepth;
+            rt_mq_send(DepthControlmq,&DCInfo,sizeof(DepthControlInfo));
+        }
         Drv_Delay_Ms(600);
     }
 }
@@ -215,9 +222,10 @@ void DepthControl(void* paramenter)
         if(rt_mq_recv(DepthControlmq,&DCInfo,sizeof(DepthControlInfo),RT_WAITING_NO) == RT_EOK)
         {
             ExpDepth = DCInfo.setDepth;
-            //printf("%f",ExpDepth);
+            // printf("Exp:%0.2f\r\n",ExpDepth);
         }
 
+        printf("Exp:%0.2f\r\n",ExpDepth);
         //获取当前深度
         CurrDepth = MS5837.fDepth;
         //定深控制函数
@@ -231,7 +239,6 @@ void DepthControl(void* paramenter)
 /*俯仰、机械爪及探照灯*/
 void PlusControl(void* paramenter)
 {
-    DepthControlInfo DCInfo;
 	PWMInfo.PWMout[claw_shouder_Speed] = 1000;
 	PWMInfo.PWMout[claw_elbow_Speed] = Servo_Angle_To_HightTime(CLAW_CATCH_STOP_ANGLE);
     //PWMInfo.PWMout[claw_elbow_Speed] = Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE);
@@ -273,42 +280,39 @@ void PlusControl(void* paramenter)
 		// 		Exp_AngleInfo.Yaw += 0.5;
 		// 	}
 		//十字键左右控制俯仰
-		if(x_y_z_pitch & 0x01)
-			{ 
-				Exp_AngleInfo.Pitch += 0.5;
-				if(Exp_AngleInfo.Pitch > 150)
-					Exp_AngleInfo.Pitch = 150;
-			}
-		else if(x_y_z_pitch & 0x02)
-			{ 
-				Exp_AngleInfo.Pitch -= 0.5;
-				if(Exp_AngleInfo.Pitch < -150)
-					Exp_AngleInfo.Pitch = -150;
-			}
+		// if(x_y_z_pitch & 0x01)
+		// 	{ 
+		// 		Exp_AngleInfo.Pitch += 0.5;
+		// 		if(Exp_AngleInfo.Pitch > 150)
+		// 			Exp_AngleInfo.Pitch = 150;
+		// 	}
+		// else if(x_y_z_pitch & 0x02)
+		// 	{ 
+		// 		Exp_AngleInfo.Pitch -= 0.5;
+		// 		if(Exp_AngleInfo.Pitch < -150)
+		// 			Exp_AngleInfo.Pitch = -150;
+		// 	}
             
         //左右摇杆按键分别对应在外夹取物品状态与回框放置物品状态
-        if(State_control & 0x01)
-            {
-                DCInfo.setDepth += 0.1;
-                if(DCInfo.setDepth > 100.0)
-                    DCInfo.setDepth = 100.0;
-                rt_mq_send(DepthControlmq,&DCInfo,sizeof(DepthControlInfo));
-            }
-        else if(State_control & 0x02)
-            {
-                DCInfo.setDepth -= 0.1;
-                if(DCInfo.setDepth < 0.0)
-                    DCInfo.setDepth = 0.0;
-                rt_mq_send(DepthControlmq,&DCInfo,sizeof(DepthControlInfo));
-            }
+        // if(State_control & 0x01)
+        //     {
+        //         DCInfo.setDepth += 0.1;
+        //         if(DCInfo.setDepth > 100.0)
+        //             DCInfo.setDepth = 100.0;
+        //     }
+        // else if(State_control & 0x02)
+        //     {
+        //         DCInfo.setDepth -= 0.1;
+        //         if(DCInfo.setDepth < 0.0)
+        //             DCInfo.setDepth = 0.0;
+        //     }
 
 		//左摇杆上下控制大臂
-		// if(left_rocker == 0)
-        // { 
-        //     printf("zuo");
-        // }//锟�?
+		if(left_rocker == 0)
+        { ;
+        }//锟�?
 		
-		else if(left_rocker == 1)
+		else if(left_rocker == 2)
 		{
 			PWMInfo.PWMout[claw_shouder_Speed] += 5;
 			if(PWMInfo.PWMout[claw_shouder_Speed] > 1170)
@@ -318,7 +322,7 @@ void PlusControl(void* paramenter)
 			if(PWMInfo.PWMout[claw_shouder_Speed] < 500) 
             PWMInfo.PWMout[claw_shouder_Speed] = 500;
 		}
-		else if(left_rocker == 2)
+		else if(left_rocker == 1)
 		{
 			PWMInfo.PWMout[claw_shouder_Speed] -= 5;
 			if(PWMInfo.PWMout[claw_shouder_Speed] < 800 )
@@ -339,8 +343,6 @@ void PlusControl(void* paramenter)
 		{
             // printf("/naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/n");
 			PWMInfo.PWMout[claw_elbow_Speed] -= CLAW_STEP+5;
-            if(PWMInfo.PWMout[claw_elbow_Speed] > Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE+90))
-            PWMInfo.PWMout[claw_elbow_Speed] = Servo_Angle_To_HightTime(CLAW_SHOUDER_STOP_ANGLE+90);
 			if(PWMInfo.PWMout[claw_elbow_Speed] > 2500) 
             PWMInfo.PWMout[claw_elbow_Speed] = 2500;
 			if(PWMInfo.PWMout[claw_elbow_Speed] < 500) 
@@ -358,15 +360,15 @@ void PlusControl(void* paramenter)
         else if(right_rocker == 3)
         {
             PWMInfo.PWMout[light_level_1] += 15;
-            if(PWMInfo.PWMout[light_level_1] > 1800) 
-            PWMInfo.PWMout[light_level_1] = 1800;
+            if(PWMInfo.PWMout[light_level_1] > 1790) 
+            PWMInfo.PWMout[light_level_1] = 1790;
             // right_rocker = 0;
         }
         else if(right_rocker == 4)
         {
             PWMInfo.PWMout[light_level_1] -= 15;
-            if(PWMInfo.PWMout[light_level_1] < 1350) 
-            PWMInfo.PWMout[light_level_1] = 1350;
+            if(PWMInfo.PWMout[light_level_1] < 1450) 
+            PWMInfo.PWMout[light_level_1] = 1450;
             // right_rocker = 0;
         }
         else{ ;}
@@ -382,8 +384,8 @@ void PlusControl(void* paramenter)
 		else if(Mode_control & 0x04)
 		{
 			PWMInfo.PWMout[claw_catchSpeed] += CLAW_STEP+5;
-			if(PWMInfo.PWMout[claw_catchSpeed] > 1585) 
-            PWMInfo.PWMout[claw_catchSpeed] = 1585;
+			if(PWMInfo.PWMout[claw_catchSpeed] > 1575) 
+            PWMInfo.PWMout[claw_catchSpeed] = 1575;
 			if(PWMInfo.PWMout[claw_catchSpeed] > 2500) 
             PWMInfo.PWMout[claw_catchSpeed] = 2500;
 			if(PWMInfo.PWMout[claw_catchSpeed] < 500) 
@@ -409,17 +411,17 @@ void ReportPWMout(void* paramenter)
 {
     while(1)
     {
-    //   printf("h: %d %d %d %d\r\n",
-	// 		PWMInfo.PWMout[h_wheel1_speed],
-	// 		PWMInfo.PWMout[h_wheel2_speed],
-	// 		PWMInfo.PWMout[h_wheel3_speed],
-	// 		PWMInfo.PWMout[h_wheel4_speed] );
+      printf("h: %d %d %d %d\r\n",
+			PWMInfo.PWMout[h_wheel1_speed],
+			PWMInfo.PWMout[h_wheel2_speed],
+			PWMInfo.PWMout[h_wheel3_speed],
+			PWMInfo.PWMout[h_wheel4_speed] );
 			
-			printf("v: %d %d %d %d\r\n \r\n",
-			PWMInfo.PWMout[v_wheel1_speed],
-			PWMInfo.PWMout[v_wheel2_speed],
-			PWMInfo.PWMout[v_wheel3_speed],
-			PWMInfo.PWMout[v_wheel4_speed] );
+			// printf("v: %d %d %d %d\r\n \r\n",
+			// PWMInfo.PWMout[v_wheel1_speed],
+			// PWMInfo.PWMout[v_wheel2_speed],
+			// PWMInfo.PWMout[v_wheel3_speed],
+			// PWMInfo.PWMout[v_wheel4_speed] );
         // printf("big:%d small:%d zhua:%d camera:%d\r\n",
         //         PWMInfo.PWMout[claw_shouder_Speed],
         //         PWMInfo.PWMout[claw_elbow_Speed],

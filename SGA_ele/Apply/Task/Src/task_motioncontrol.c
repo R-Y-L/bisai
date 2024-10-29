@@ -11,18 +11,18 @@ void Task_Motion_Process(void)
 	
 	//将抽屉数组计算出来，存储PWMInfo，设定PWMInfo宏观值
 	HandleMode_data_handle();
-	if(BalanceFlag)
-		//根据期望角度对PWMInfo进行修改,使得两个维度的旋�?保持平衡，俯仰�?�达到�?�期
-		Balance_data_handle();
+	// if(BalanceFlag)
+	// 	//根据期望角度对PWMInfo进行修改,使得两个维度的旋�?保持平衡，俯仰�?�达到�?�期
+	// 	Balance_data_handle();
 	
 	//限制最大输�?
 	PWNOutput_limit();
 	
 	//将反�?的PWM输出增大�?倍数
-	Thruster_nagative_data_handle(1.5);
+	Thruster_nagative_data_handle(1.2);
 	
 	//设置�?�?推进器PWN输出
-    Task_Thruster_AllStart(PWMInfo.PWMout);
+    Task_Thruster_pin_Start(PWMInfo.PWMout);
 }
 
 void HandleMode_data_handle()
@@ -30,41 +30,38 @@ void HandleMode_data_handle()
 	//各方向速度分量
 	short x_Speed = 0;
 	short y_Speed = 0;
+	short YAWspeed = 0;
 	// short z_Speed = 0;
 	
 	//根据储存按键数据和扳机速度系数处理出各方向速度分量的�?
 	//按键
 	//慢速（仅前进后退）
 	if((x_y_z_pitch & 0x80) && (SpeedMode & 0x01))
-		x_Speed += speed_kH * MIN_HPOWER  / 100;
+		x_Speed += 40;
 	if((x_y_z_pitch & 0x40) && (SpeedMode & 0x01))
-	    x_Speed -= speed_kH * MIN_HPOWER / 100;
+	    x_Speed -= 40;
+	if((x_y_z_pitch & 0x20) && (SpeedMode & 0x01))
+		y_Speed += 40;
+	if((x_y_z_pitch & 0x10) && (SpeedMode & 0x01))
+	    y_Speed -= 40;
+	if((left_rocker==3) && (SpeedMode & 0x01))
+		YAWspeed = 30;
+	if((left_rocker==4) && (SpeedMode & 0x01))
+		YAWspeed = -40;
 	//原速
 	if((x_y_z_pitch & 0x80) && (!(SpeedMode & 0x01)))
 		x_Speed += speed_kH * MAX_HPOWER  / 100;
 	if((x_y_z_pitch & 0x40) && (!(SpeedMode & 0x01)))
 	    x_Speed -= speed_kH * MAX_HPOWER / 100;
-	if(x_y_z_pitch & 0x20)
+	if((x_y_z_pitch & 0x20) && (!(SpeedMode & 0x01)))
 		y_Speed += speed_kH * MAX_HPOWER / 100;
-	if(x_y_z_pitch & 0x10)
+	if((x_y_z_pitch & 0x10) && (!(SpeedMode & 0x01)))
 	    y_Speed -= speed_kH * MAX_HPOWER / 100;
-	
-	// if(x_y_z_pitch & 0x08)
-	// 	z_Speed += speed_kV * MAX_VPOWER / 100 ;
-	// if(x_y_z_pitch & 0x04)
-	//     z_Speed -= speed_kV * MAX_VPOWER / 100  ;
-	
-	short YAWspeed = 0;
-	if(left_rocker==3)
-		{ 
-			YAWspeed = YAWSPEED;
-		}
-	else if(left_rocker==4)
-		{ 
-			YAWspeed = -YAWSPEED-10;
-		}
+	if((left_rocker==3) && (!(SpeedMode & 0x01)))
+		YAWspeed = YAWSPEED;
+	if((left_rocker==4) && (!(SpeedMode & 0x01)))
+		YAWspeed = -YAWSPEED-10;
  
-
 	//计算推进器�?
 	PWMInfo.PWMout[v_wheel1_speed] =  y_Speed -  x_Speed - YAWspeed + STOP_PWM_VALUE;
     PWMInfo.PWMout[v_wheel2_speed] =  y_Speed +  x_Speed - YAWspeed + STOP_PWM_VALUE;
@@ -92,30 +89,30 @@ void HandleMode_data_handle()
 
 void Balance_data_handle(void)
 {
-	float rollOutput = 0,pitchOutput = 0;
-	float Curr_roll = JY901S.stcAngle.ConPitch;
-	float Curr_pitch = JY901S.stcAngle.ConRoll;
-	// float Curr_yaw = concon_YAW;
+// 	float rollOutput = 0,pitchOutput = 0;
+// 	float Curr_roll = JY901S.stcAngle.ConPitch;
+// 	float Curr_pitch = JY901S.stcAngle.ConRoll;
+// 	// float Curr_yaw = concon_YAW;
 	
-	//计算每个维度的PID输出
-    rollOutput = Algo_PID_Calculate(&RollPID, Curr_roll, Exp_AngleInfo.Roll);
-    pitchOutput = Algo_PID_Calculate(&PitchPID, Curr_pitch, Exp_AngleInfo.Pitch);
-// 	if((!(Mode_control & 0x80))&&(Mode_control & 0x01))
-// 	{	
-// 		yawOutput = Algo_PID_Calculate(&YawPID, Curr_yaw, Exp_AngleInfo.Yaw);
-// //		printf("Y %f %f\r\n",yawOutput,Exp_AngleInfo.Yaw);
-// 	}
+// 	//计算每个维度的PID输出
+//     rollOutput = Algo_PID_Calculate(&RollPID, Curr_roll, Exp_AngleInfo.Roll);
+//     pitchOutput = Algo_PID_Calculate(&PitchPID, Curr_pitch, Exp_AngleInfo.Pitch);
+// // 	if((!(Mode_control & 0x80))&&(Mode_control & 0x01))
+// // 	{	
+// // 		yawOutput = Algo_PID_Calculate(&YawPID, Curr_yaw, Exp_AngleInfo.Yaw);
+// // //		printf("Y %f %f\r\n",yawOutput,Exp_AngleInfo.Yaw);
+// // 	}
 	
-	//根据PIDout值�?�PWMInfo进�?�修�?
-    // PWMInfo.PWMout[v_wheel1_speed] -= yawOutput;
-    // PWMInfo.PWMout[v_wheel2_speed] += yawOutput;
-    // PWMInfo.PWMout[v_wheel3_speed] += yawOutput;
-    // PWMInfo.PWMout[v_wheel4_speed] -= yawOutput;
+// 	//根据PIDout值�?�PWMInfo进�?�修�?
+//     // PWMInfo.PWMout[v_wheel1_speed] -= yawOutput;
+//     // PWMInfo.PWMout[v_wheel2_speed] += yawOutput;
+//     // PWMInfo.PWMout[v_wheel3_speed] += yawOutput;
+//     // PWMInfo.PWMout[v_wheel4_speed] -= yawOutput;
 	
-	PWMInfo.PWMout[h_wheel1_speed] += - pitchOutput + rollOutput; 
-    PWMInfo.PWMout[h_wheel2_speed] += - pitchOutput - rollOutput; 
-    PWMInfo.PWMout[h_wheel3_speed] += + pitchOutput + rollOutput; 
-    PWMInfo.PWMout[h_wheel4_speed] += + pitchOutput - rollOutput; 
+// 	PWMInfo.PWMout[h_wheel1_speed] += - pitchOutput + rollOutput; 
+//     PWMInfo.PWMout[h_wheel2_speed] += - pitchOutput - rollOutput; 
+//     PWMInfo.PWMout[h_wheel3_speed] += + pitchOutput + rollOutput; 
+//     PWMInfo.PWMout[h_wheel4_speed] += + pitchOutput - rollOutput; 
 }
 
 void Thruster_nagative_data_handle(float k)
@@ -123,37 +120,37 @@ void Thruster_nagative_data_handle(float k)
 	int i = 0;
 	for(;i<8;i++)
 	{
-		if(PWMInfo.PWMout[i]<1500)
-			PWMInfo.PWMout[i] = 1500-(1500-PWMInfo.PWMout[i])*k;
+		if(PWMInfo.PWMout[i]<1400)
+			PWMInfo.PWMout[i] = 1400-(1400-PWMInfo.PWMout[i])*k;
 	}
 }
 
 void PWNOutput_limit(void)
 {
 	//PWM限幅�?0.6A
-    if(PWMInfo.PWMout[v_wheel1_speed] < 1300)  PWMInfo.PWMout[v_wheel1_speed] = 1300;//反转还会�?放大
-    if(PWMInfo.PWMout[v_wheel1_speed] > 1675)  PWMInfo.PWMout[v_wheel1_speed] = 1675;
+    if(PWMInfo.PWMout[v_wheel1_speed] < 1325)  PWMInfo.PWMout[v_wheel1_speed] = 1325;//反转还会�?放大
+    if(PWMInfo.PWMout[v_wheel1_speed] > 1700)  PWMInfo.PWMout[v_wheel1_speed] = 1700;
 
-    if(PWMInfo.PWMout[v_wheel2_speed] < 1300)  PWMInfo.PWMout[v_wheel2_speed] = 1300;
-    if(PWMInfo.PWMout[v_wheel2_speed] > 1675)  PWMInfo.PWMout[v_wheel2_speed] = 1675;
+    if(PWMInfo.PWMout[v_wheel2_speed] < 1325)  PWMInfo.PWMout[v_wheel2_speed] = 1325;
+    if(PWMInfo.PWMout[v_wheel2_speed] > 1700)  PWMInfo.PWMout[v_wheel2_speed] = 1700;
 	
-    if(PWMInfo.PWMout[v_wheel3_speed] < 1300)  PWMInfo.PWMout[v_wheel3_speed] = 1300;
-    if(PWMInfo.PWMout[v_wheel3_speed] > 1675)  PWMInfo.PWMout[v_wheel3_speed] = 1675;
+    if(PWMInfo.PWMout[v_wheel3_speed] < 1325)  PWMInfo.PWMout[v_wheel3_speed] = 1325;
+    if(PWMInfo.PWMout[v_wheel3_speed] > 1700)  PWMInfo.PWMout[v_wheel3_speed] = 1700;
 	
-    if(PWMInfo.PWMout[v_wheel4_speed] < 1300)  PWMInfo.PWMout[v_wheel4_speed] = 1300;
-    if(PWMInfo.PWMout[v_wheel4_speed] > 1675)  PWMInfo.PWMout[v_wheel4_speed] = 1675;
+    if(PWMInfo.PWMout[v_wheel4_speed] < 1325)  PWMInfo.PWMout[v_wheel4_speed] = 1325;
+    if(PWMInfo.PWMout[v_wheel4_speed] > 1700)  PWMInfo.PWMout[v_wheel4_speed] = 1700;
 	
-    if(PWMInfo.PWMout[h_wheel1_speed] < 1200)  PWMInfo.PWMout[h_wheel1_speed] = 1200;
-    if(PWMInfo.PWMout[h_wheel1_speed] > 1750)  PWMInfo.PWMout[h_wheel1_speed] = 1750;
+    // if(PWMInfo.PWMout[h_wheel1_speed] < 1325)  PWMInfo.PWMout[h_wheel1_speed] = 1325;
+    // if(PWMInfo.PWMout[h_wheel1_speed] > 1700)  PWMInfo.PWMout[h_wheel1_speed] = 1700;
 	
-    if(PWMInfo.PWMout[h_wheel2_speed] < 1200)  PWMInfo.PWMout[h_wheel2_speed] = 1200;
-    if(PWMInfo.PWMout[h_wheel2_speed] > 1750)  PWMInfo.PWMout[h_wheel2_speed] = 1750;
+    // if(PWMInfo.PWMout[h_wheel2_speed] < 1325)  PWMInfo.PWMout[h_wheel2_speed] = 1325;
+    // if(PWMInfo.PWMout[h_wheel2_speed] > 1700)  PWMInfo.PWMout[h_wheel2_speed] = 1700;
 	
-    if(PWMInfo.PWMout[h_wheel3_speed] < 1200)  PWMInfo.PWMout[h_wheel3_speed] = 1200;
-    if(PWMInfo.PWMout[h_wheel3_speed] > 1750)  PWMInfo.PWMout[h_wheel3_speed] = 1750;
+    // if(PWMInfo.PWMout[h_wheel3_speed] < 1325)  PWMInfo.PWMout[h_wheel3_speed] = 1325;
+    // if(PWMInfo.PWMout[h_wheel3_speed] > 1700)  PWMInfo.PWMout[h_wheel3_speed] = 1700;
 	
-    if(PWMInfo.PWMout[h_wheel4_speed] < 1200)  PWMInfo.PWMout[h_wheel4_speed] = 1200;
-    if(PWMInfo.PWMout[h_wheel4_speed] > 1750)  PWMInfo.PWMout[h_wheel4_speed] = 1750;
+    // if(PWMInfo.PWMout[h_wheel4_speed] < 1325)  PWMInfo.PWMout[h_wheel4_speed] = 1325;
+    // if(PWMInfo.PWMout[h_wheel4_speed] > 1700)  PWMInfo.PWMout[h_wheel4_speed] = 1700;
 }
 
 void Expect_angle_Init(void)

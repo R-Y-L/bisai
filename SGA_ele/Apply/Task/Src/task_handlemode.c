@@ -4,11 +4,14 @@
 
 extern PWMInfo_T PWMInfo;
 
+extern DepthControlInfo DCInfo;
+
 void HandleMode_data_storage(char key,char Press);
 
 //手动模式主函数
 void Task_HandleMode_Process(HandleModeInfo HMInfo)
 {
+
     char key = 0;         
     char Press = 0;           
 	
@@ -23,6 +26,7 @@ void Task_HandleMode_Process(HandleModeInfo HMInfo)
 
 void HandleMode_data_storage(char key,char Press)
 {
+	DepthControlInfo DCInfo;
 	printf("key = %d , press = %d\r\n",key,Press);
 	switch (key)
 	{
@@ -82,7 +86,7 @@ void HandleMode_data_storage(char key,char Press)
 		break;
 			
 			//z
-		case 4://下沉（垂推反了）
+		case 7://下沉
 			if(Press)
 			{
 				if(!(x_y_z_pitch & 8))
@@ -92,10 +96,12 @@ void HandleMode_data_storage(char key,char Press)
 			{
 				if(x_y_z_pitch & 8)
 					x_y_z_pitch -= 8;
+				DCInfo.setDepth = MS5837.fDepth;
+				rt_mq_send(DepthControlmq,&DCInfo,sizeof(DepthControlInfo));
 			}
 		break;
 			
-		case 7:
+		case 4:
 			if(Press)
 			{
 				if(!(x_y_z_pitch & 4))
@@ -105,6 +111,8 @@ void HandleMode_data_storage(char key,char Press)
 			{
 				if(x_y_z_pitch & 4)
 					x_y_z_pitch -= 4;
+				DCInfo.setDepth = MS5837.fDepth;
+				rt_mq_send(DepthControlmq,&DCInfo,sizeof(DepthControlInfo));
 			}
 		break;
 			
@@ -256,24 +264,24 @@ void HandleMode_data_storage(char key,char Press)
 
 		//start键
 			//定姿总开关使用BalanceFlag第一位
-			case 8:
-			if(Press)
-				{
-					if(((BalanceFlag >> 1 ) % 2) == 0)
-						BalanceFlag |= 2;
-					else
-						BalanceFlag -= 2;
-				}
-			else
-				{
-					Expect_angle_Init();
-					// concon_YAW = JY901S.stcAngle.ConYaw;
-					if(((BalanceFlag >> 1 ) % 2) == 1)
-						BalanceFlag |= 1;
-					else
-						BalanceFlag &= ~1;
-				}
-			break;
+			// case 8:
+			// if(Press)
+			// 	{
+			// 		if(((BalanceFlag >> 1 ) % 2) == 0)
+			// 			BalanceFlag |= 2;
+			// 		else
+			// 			BalanceFlag -= 2;
+			// 	}
+			// else
+			// 	{
+			// 		Expect_angle_Init();
+			// 		// concon_YAW = JY901S.stcAngle.ConYaw;
+			// 		if(((BalanceFlag >> 1 ) % 2) == 1)
+			// 			BalanceFlag |= 1;
+			// 		else
+			// 			BalanceFlag &= ~1;
+			// 	}
+			// break;
 		//back键
 		//慢速状态切换
 		case 9:

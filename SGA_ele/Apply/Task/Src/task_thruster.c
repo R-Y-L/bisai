@@ -80,6 +80,19 @@ void Task_Thruster_AllStart(uint16_t *adress)
 }
 
 /**
+ * @brief 水平推进器开始工作
+ * @param *adress 存放八个推进器的分量数组的首地址
+ * @retval null
+*/
+void Task_Thruster_pin_Start(uint16_t *adress)
+{
+	Task_Thruster_Start(0,*adress);
+	Task_Thruster_Start(1,*(adress+1));
+	Task_Thruster_Start(2,*(adress+2));
+	Task_Thruster_Start(3,*(adress+3));
+}
+
+/**
  * @brief 电机停止工作
  * @param index 选择几号推进器
  * @retval null

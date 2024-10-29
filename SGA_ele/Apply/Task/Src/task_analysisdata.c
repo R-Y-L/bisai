@@ -22,7 +22,7 @@ void Task_AnalysisData(uint8_t *DataBuf)
                         AnalysisData[2],
                         AnalysisData[3],
                         AnalysisData[4]);
-    // printf("%d ,%s,%s,%s,%s,%s\r\n",AnalysisNum,AnalysisData[0],AnalysisData[1],AnalysisData[2],AnalysisData[3],AnalysisData[4]);
+    //  printf("%d ,%s,%s,%s,%s,%s\r\n",AnalysisNum,AnalysisData[0],AnalysisData[1],AnalysisData[2],AnalysisData[3],AnalysisData[4]);
 
     if(!AnalysisNum) return;
     /* ????????????? */
@@ -91,6 +91,7 @@ void Task_AnalysisData(uint8_t *DataBuf)
 	    else if(!rt_strcmp(AnalysisData[0],"BJ"))
     {
 		speed_kH = strtof(AnalysisData[1],NULL);
+        
 		speed_kV = strtof(AnalysisData[2],NULL);
 		
     /*???????????????????????????????????

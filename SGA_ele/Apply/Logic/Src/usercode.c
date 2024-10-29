@@ -132,6 +132,7 @@ watchdog_timer = rt_timer_create("watchdog", watchdog_timer_callback, RT_NULL, r
     {
         rt_timer_start(watchdog_timer);
     }
+	
 }
 
 

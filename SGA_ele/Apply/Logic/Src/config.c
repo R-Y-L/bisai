@@ -33,6 +33,7 @@ volatile char ConnetFlag = 0;
 volatile char BalanceFlag = 0;
 volatile char SpeedMode = 0;
 volatile char Plus = 0;
+volatile char cnt = 0;
 
 tagGPIO_T demoGPIO[] =
 {
@@ -67,9 +68,9 @@ tagGPIO_T demoGPIO[] =
 /* 深度环PID */
 tagPID_T DepthPID = 
 {
-	.fKp = 1,
-	.fKi = 0.1,
-	.fKd = 0,
+	.fKp = 3,
+	.fKi = 0,   
+	.fKd = 0.1,
 };
 
 /* 艏向PID */
@@ -216,7 +217,7 @@ tagPWM_T PWM[] =
 	{
 		
 		.tPWMHandle.Instance	= TIM4,         	/* 定时器4 */
-		.fDuty					= 0,				/* 初始占空比（%） */ //2.5%带宽为500
+		.fDuty					= 7.5,				/* 初始占空比（%） */ //2.5%带宽为500
 		.ulFreq					= 50,				/* 频率（Hz） */
 		.ucChannel				= TIM_CHANNEL_1,	/* 通道 */
 		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_6,		/* IO映射 */
@@ -236,7 +237,7 @@ tagPWM_T PWM[] =
 	[6] =
 	{
 		.tPWMHandle.Instance	= TIM4,         	/* 定时器4 */
-		.fDuty					= 0,				/* 初始占空比（%） */
+		.fDuty					= 7.5,				/* 初始占空比（%） */
 		.ulFreq					= 50,				/* 频率（Hz） */
 		.ucChannel				= TIM_CHANNEL_3,	/* 通道 */
 		.tGPIO.tGPIOInit.Pin	= GPIO_PIN_8,		/* IO映射 */
